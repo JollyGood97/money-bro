@@ -1,33 +1,42 @@
+import 'react-native-gesture-handler';
 import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, Button, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Button, View} from 'react-native';
+import {NativeBaseProvider} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
 
 import Intro from './src/screens/Intro';
+import Auth from './src/screens/Auth';
+import AppDrawer from './src/routes/AppDrawer';
 
 const App = () => {
   const [showRealApp, setShowRealApp] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
 
+  console.log('App', authenticated);
   return (
-    <>
-      {showRealApp ? (
-        <SafeAreaView style={styles.container}>
-          <View style={styles.container}>
-            <Text style={styles.titleStyle}>
-              React Native App Intro Slider using AppIntroSlider
-            </Text>
-            <Text style={styles.paragraphStyle}>
-              This will be your screen when you click Skip from any slide or
-              Done button at last
-            </Text>
-            <Button
-              title="Show Intro Slider again"
-              onPress={() => setShowRealApp(false)}
-            />
-          </View>
-        </SafeAreaView>
-      ) : (
-        <Intro setShowRealApp={setShowRealApp} />
-      )}
-    </>
+    <NavigationContainer>
+      <NativeBaseProvider>
+        {authenticated ? (
+          <AppDrawer />
+        ) : (
+          <>
+            {showRealApp ? (
+              <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
+                  <Auth setAuthenticated={setAuthenticated} />
+                  <Button
+                    title="Show Intro Slider again"
+                    onPress={() => setShowRealApp(false)}
+                  />
+                </View>
+              </SafeAreaView>
+            ) : (
+              <Intro setShowRealApp={setShowRealApp} />
+            )}
+          </>
+        )}
+      </NativeBaseProvider>
+    </NavigationContainer>
   );
 };
 
