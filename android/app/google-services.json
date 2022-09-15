@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "813865515385",
+    "project_id": "moneybro-6a22e",
+    "storage_bucket": "moneybro-6a22e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813865515385:android:e4cfd53071284a421157a8",
+        "android_client_info": {
+          "package_name": "com.moneybro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813865515385-v3iel693g8h9hovkvv5g3pj49ohtkacb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moneybro",
+            "certificate_hash": "6c3900c0d8a3da56b92bd79da943df742047b9dd"
+          }
+        },
+        {
+          "client_id": "813865515385-a36riambmfe02tt0m57tr3kvhi79r66i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA61R124VkeydE91NqvIGW6tO6Lnd6kZ4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813865515385-a36riambmfe02tt0m57tr3kvhi79r66i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

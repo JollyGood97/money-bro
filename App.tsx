@@ -7,6 +7,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import Intro from './src/screens/Intro';
 import Auth from './src/screens/Auth';
 import AppDrawer from './src/routes/AppDrawer';
+import UserProvider from './src/context/UserContext';
+import AppStack from './src/routes/AppStack';
 
 const App = () => {
   const [showRealApp, setShowRealApp] = useState<boolean>(false);
@@ -14,29 +16,31 @@ const App = () => {
 
   console.log('App', authenticated);
   return (
-    <NavigationContainer>
-      <NativeBaseProvider>
-        {authenticated ? (
-          <AppDrawer />
-        ) : (
-          <>
-            {showRealApp ? (
-              <SafeAreaView style={styles.container}>
-                <View style={styles.container}>
-                  <Auth setAuthenticated={setAuthenticated} />
-                  <Button
-                    title="Show Intro Slider again"
-                    onPress={() => setShowRealApp(false)}
-                  />
-                </View>
-              </SafeAreaView>
-            ) : (
-              <Intro setShowRealApp={setShowRealApp} />
-            )}
-          </>
-        )}
-      </NativeBaseProvider>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <NativeBaseProvider>
+          {authenticated ? (
+            <AppStack />
+          ) : (
+            <>
+              {showRealApp ? (
+                <SafeAreaView style={styles.container}>
+                  <View style={styles.container}>
+                    <Auth setAuthenticated={setAuthenticated} />
+                    <Button
+                      title="Show Intro Slider again"
+                      onPress={() => setShowRealApp(false)}
+                    />
+                  </View>
+                </SafeAreaView>
+              ) : (
+                <Intro setShowRealApp={setShowRealApp} />
+              )}
+            </>
+          )}
+        </NativeBaseProvider>
+      </NavigationContainer>
+    </UserProvider>
   );
 };
 
