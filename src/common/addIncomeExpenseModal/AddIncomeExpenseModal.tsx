@@ -9,18 +9,24 @@ import {
   FormControl,
   Text,
 } from 'native-base';
+import {useAddIncomeExpenseMutation} from '../../api/baseApi';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 
 type AddIncomeExpenseModalProps = {
   type: 'Income' | 'Expense';
   showModal: boolean;
   setShowModal: (value: boolean) => void;
+  currentMonth: string;
+  userID: string;
 };
 
 const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
   props: AddIncomeExpenseModalProps,
 ) => {
-  const {type, showModal, setShowModal} = props;
+  const {type, showModal, setShowModal, currentMonth, userID} = props;
+  const [addIncomeExpense] = useAddIncomeExpenseMutation();
+  const [description, setDescription] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
   // const {toggleColorMode} = useColorMode();
   // const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
@@ -35,7 +41,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
         <Modal.Body>
           <FormControl>
             <FormControl.Label>Description</FormControl.Label>
-            <Input />
+            <Input onChangeText={text => setDescription(text.trim())} />
           </FormControl>
           <FormControl mt="3">
             <FormControl.Label>Amount</FormControl.Label>
@@ -51,6 +57,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
                 }}
                 placeholder="amount"
                 keyboardType="numeric"
+                onChangeText={val => setAmount(val)}
               />
               <InputRightAddon children={'$'} />
             </InputGroup>
@@ -76,8 +83,17 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
                 md: '100%',
               }}
               colorScheme="indigo"
-              onPress={() => {
-                setShowModal(false);
+              onPress={async () => {
+                await addIncomeExpense({
+                  type,
+                  description,
+                  amount,
+                  month: currentMonth,
+                  uid: userID,
+                }).then(() => {
+                  setShowModal(false);
+                });
+                // close after saving
               }}>
               Save
             </Button>

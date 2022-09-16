@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import {
@@ -13,7 +13,9 @@ import {
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import AddIncomeExpenseModal from '../../common/addIncomeExpenseModal/AddIncomeExpenseModal';
-import {EXPENSE, INCOME} from '../../common/constants/Constants';
+import {EXPENSE, INCOME, month} from '../../constants/Constants';
+import {UserContext} from '../../context/UserContext';
+import {useGetIncomeExpenseQuery} from '../../api/baseApi';
 
 // move to const file
 const widthAndHeight = 250;
@@ -28,13 +30,19 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
   const [showAddIncomeModal, setShowAddIncomeModal] = useState<boolean>(false);
   const [showAddExpenseModal, setShowAddExpenseModal] =
     useState<boolean>(false);
+  const userContext = useContext(UserContext);
+  const userID = userContext?.user?.uid || '';
 
+  const currentMonth = month[new Date().getMonth()];
+  const {isSuccess, isLoading, isError, error, data} = useGetIncomeExpenseQuery(
+    {showAddIncomeModal, uid: userID},
+  );
   return (
     <ScrollView>
       <View padding={10} bg={useColorModeValue('#e0e7ff', '#000e21')}>
         <Center>
-          <Text>August</Text>
-          {/* <VStack space={5}> */}
+          <Text>Data for: {currentMonth}</Text>
+          {console.log(isSuccess, isLoading, isError, error, data)}
           <PieChart
             widthAndHeight={widthAndHeight}
             series={series}
@@ -97,11 +105,15 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
         type={INCOME}
         setShowModal={setShowAddIncomeModal}
         showModal={showAddIncomeModal}
+        currentMonth={currentMonth}
+        userID={userID}
       />
       <AddIncomeExpenseModal
         type={EXPENSE}
         setShowModal={setShowAddExpenseModal}
         showModal={showAddExpenseModal}
+        currentMonth={currentMonth}
+        userID={userID}
       />
     </ScrollView>
   );

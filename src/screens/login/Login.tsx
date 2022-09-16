@@ -1,11 +1,8 @@
 import React, {FC, useContext, useState} from 'react';
 
 import {
-  InputGroup,
-  InputRightAddon,
   Button,
   Input,
-  Modal,
   FormControl,
   Text,
   Box,
@@ -22,7 +19,6 @@ import firestore from '@react-native-firebase/firestore';
 import AppStackParamList from '../../model/AppStackParamList';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 import {UserContext} from './../../context/UserContext';
-import User from '../../model/User';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
