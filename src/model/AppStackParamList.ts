@@ -1,8 +1,7 @@
 type AppStackParamList = {
-  Drawer: undefined;
+  AppDrawer: undefined;
   Signup: undefined;
   Login: undefined;
-  Dashboard: undefined;
 };
 
 export default AppStackParamList;

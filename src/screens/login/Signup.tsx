@@ -1,11 +1,8 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 
 import {
-  InputGroup,
-  InputRightAddon,
   Button,
   Input,
-  Modal,
   FormControl,
   Text,
   Box,
@@ -16,7 +13,12 @@ import {
   Link,
 } from 'native-base';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import AppStackParamList from '../../model/AppStackParamList';
+import {UserContext} from './../../context/UserContext';
+
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 
 type SignupProps = NativeStackScreenProps<AppStackParamList, 'Signup'>;
@@ -27,7 +29,43 @@ const Signup: FC<SignupProps> = ({navigation}: SignupProps) => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  const onSignupPress = () => {};
+  const userContext = useContext(UserContext);
+
+  const onSignupPress = () => {
+    if (password !== confirmPassword) {
+      console.log("Passwords don't match.");
+      return;
+    }
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(response => {
+        console.log('User account created & signed in!');
+        const newUser = {
+          uid: response?.user?.uid,
+          email,
+          username,
+        };
+        userContext?.setUser(newUser);
+        const usersCollection = firestore().collection('users');
+        usersCollection
+          .doc(newUser.uid)
+          .set(newUser)
+          .then(() => {
+            navigation.navigate('AppDrawer');
+          });
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+        }
+
+        console.error(error);
+      });
+  };
 
   // danger.200 for light mode.
   return (

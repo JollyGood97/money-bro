@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 
 import {
   InputGroup,
@@ -16,18 +16,47 @@ import {
   Link,
 } from 'native-base';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import AppStackParamList from '../../model/AppStackParamList';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
+import {UserContext} from './../../context/UserContext';
+import User from '../../model/User';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
 const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
-  const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const userContext = useContext(UserContext);
 
-  const onLoginPress = () => {};
+  const onLoginPress = () => {
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(response => {
+        const uid = response.user.uid;
+        const usersCollection = firestore().collection('users');
+        usersCollection
+          .doc(uid)
+          .get()
+          .then(document => {
+            if (!document.exists) {
+              console.log('user not found');
+              return;
+            }
+            const existingUser = document.data();
+            if (existingUser) {
+              userContext?.setUser({
+                uid: existingUser.uid,
+                email: existingUser.email,
+                username: existingUser.username,
+              });
+              navigation.navigate('AppDrawer');
+            }
+          });
+      });
+  };
 
   // danger.200 for light mode.
   return (

@@ -13,20 +13,16 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack = () => {
   const userContext = useContext(UserContext);
+  console.log(userContext);
   return (
     <Stack.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName={!isEmpty(userContext?.user) ? 'AppDrawer' : 'Signup'}
       screenOptions={{
         headerShown: false,
       }}>
-      {!isEmpty(userContext?.user) ? (
-        <Stack.Screen name="Drawer" component={AppDrawer} />
-      ) : (
-        <>
-          <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="Login" component={Login} />
-        </>
-      )}
+      <Stack.Screen name="Signup" component={Signup} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="AppDrawer" component={AppDrawer} />
     </Stack.Navigator>
   );
 };
