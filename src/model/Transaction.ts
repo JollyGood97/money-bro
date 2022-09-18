@@ -1,7 +1,7 @@
 type Transaction = {
   uid: string;
   type: 'Income' | 'Expense';
-  amount: number;
+  amount: string;
   description: string;
   month: string;
   id: string;

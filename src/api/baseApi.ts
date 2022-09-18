@@ -1,11 +1,14 @@
 import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import firestore from '@react-native-firebase/firestore';
+import Transaction from '../model/Transaction';
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fakeBaseQuery(),
+  tagTypes: ['newIncomeExpense'],
   endpoints: builder => ({
-    getIncomeExpense: builder.query({
+    getIncomeExpense: builder.query<Transaction[], any>({
+      providesTags: ['newIncomeExpense'],
       async queryFn(arg) {
         const {uid} = arg;
         try {
@@ -23,13 +26,14 @@ export const baseApi = createApi({
               });
             });
 
-          return {data: accountsData || {}};
+          return {data: accountsData};
         } catch (error) {
           return {error};
         }
       },
     }),
     addIncomeExpense: builder.mutation({
+      invalidatesTags: ['newIncomeExpense'],
       async queryFn(data) {
         try {
           await firestore().collection('accounts').add(data);

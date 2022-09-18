@@ -24,7 +24,8 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
   props: AddIncomeExpenseModalProps,
 ) => {
   const {type, showModal, setShowModal, currentMonth, userID} = props;
-  const [addIncomeExpense] = useAddIncomeExpenseMutation();
+  const [addIncomeExpense, {isLoading, isSuccess, isError}] =
+    useAddIncomeExpenseMutation();
   const [description, setDescription] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   // const {toggleColorMode} = useColorMode();
