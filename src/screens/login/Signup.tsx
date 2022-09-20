@@ -18,6 +18,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import AppStackParamList from '../../model/AppStackParamList';
 import {UserContext} from './../../context/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 
@@ -38,13 +39,24 @@ const Signup: FC<SignupProps> = ({navigation}: SignupProps) => {
     }
     auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(response => {
+      .then(async response => {
         console.log('User account created & signed in!');
         const newUser = {
           uid: response?.user?.uid,
           email,
           username,
+          currency: '$',
         };
+
+        try {
+          await AsyncStorage.setItem(
+            'uid',
+            JSON.stringify(response?.user?.uid),
+          );
+        } catch (e) {
+          console.log('error');
+        }
+
         userContext?.setUser(newUser);
         const usersCollection = firestore().collection('users');
         usersCollection

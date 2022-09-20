@@ -11,6 +11,7 @@ import {
   VStack,
   HStack,
   Link,
+  Checkbox,
 } from 'native-base';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
@@ -19,12 +20,15 @@ import firestore from '@react-native-firebase/firestore';
 import AppStackParamList from '../../model/AppStackParamList';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 import {UserContext} from './../../context/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
 const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [stayLoggedIn, setStayLoggedIn] = useState<boolean>(false);
+
   const userContext = useContext(UserContext);
 
   const onLoginPress = () => {
@@ -36,7 +40,7 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
         usersCollection
           .doc(uid)
           .get()
-          .then(document => {
+          .then(async document => {
             if (!document.exists) {
               console.log('user not found');
               return;
@@ -47,7 +51,16 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
                 uid: existingUser.uid,
                 email: existingUser.email,
                 username: existingUser.username,
+                currency: userContext?.user?.currency,
               });
+              try {
+                await AsyncStorage.setItem(
+                  'uid',
+                  JSON.stringify(response?.user?.uid),
+                );
+              } catch (e) {
+                console.log('error');
+              }
               navigation.navigate('AppDrawer');
             }
           });
@@ -114,6 +127,23 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
               }}>
               Sign Up
             </Link>
+
+            <Checkbox
+              isChecked={stayLoggedIn}
+              colorScheme="info"
+              value={'stayLoggedIn'}
+              onChange={async () => {
+                setStayLoggedIn(!stayLoggedIn);
+                if (stayLoggedIn) {
+                  try {
+                    await AsyncStorage.setItem('stayLoggedIn', 'true');
+                  } catch (e) {
+                    console.log('Error');
+                  }
+                }
+              }}>
+              Keep me signed in
+            </Checkbox>
           </HStack>
         </VStack>
       </Box>

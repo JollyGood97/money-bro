@@ -46,33 +46,33 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
     data = [],
   } = useGetIncomeExpenseQuery({uid: userID});
 
-  const calculateData = useCallback(() => {
-    let totalIncome = 0;
-    let totalExpense = 0;
-    let total = 0;
+  // const calculateData = useCallback(() => {
+  //   let totalIncome = 0;
+  //   let totalExpense = 0;
+  //   let total = 0;
 
-    if (!isEmpty(data)) {
-      const filteredData = data.filter(
-        item => item.uid === userID && item.month === currentMonth,
-      );
-      filteredData.forEach(item => {
-        if (item.type === INCOME) {
-          totalIncome += parseInt(item.amount, 10);
-        } else {
-          totalExpense += parseInt(item.amount, 10);
-        }
-      });
-      total = totalExpense + totalIncome;
-      const incomePercentage = (totalIncome / total) * 100;
-      const expensePercentage = (totalExpense / total) * 100;
-      setSeries([expensePercentage, incomePercentage]);
-      setBalance(totalIncome - totalExpense);
-    }
-  }, [currentMonth, data, userID]);
+  //   if (!isEmpty(data)) {
+  //     const filteredData = data.filter(
+  //       item => item.uid === userID && item.month === currentMonth,
+  //     );
+  //     filteredData.forEach(item => {
+  //       if (item.type === INCOME) {
+  //         totalIncome += parseInt(item.amount, 10);
+  //       } else {
+  //         totalExpense += parseInt(item.amount, 10);
+  //       }
+  //     });
+  //     total = totalExpense + totalIncome;
+  //     const incomePercentage = (totalIncome / total) * 100;
+  //     const expensePercentage = (totalExpense / total) * 100;
+  //     setSeries([expensePercentage, incomePercentage]);
+  //     setBalance(totalIncome - totalExpense);
+  //   }
+  // }, [currentMonth, data, userID]);
 
-  useEffect(() => {
-    calculateData();
-  }, [calculateData]);
+  // useEffect(() => {
+  //   calculateData();
+  // }, [calculateData]);
 
   return (
     <ScrollView>

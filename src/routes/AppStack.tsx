@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 // import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -8,15 +8,31 @@ import Signup from '../screens/login/Signup';
 import Login from '../screens/login/Login';
 import {UserContext} from '../context/UserContext';
 import AppStackParamList from '../model/AppStackParamList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack = () => {
   const userContext = useContext(UserContext);
-  console.log(userContext);
+  const [directToHome, setDirectToHome] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getMode = async () => {
+      const stayLoggedIn = await AsyncStorage.getItem('stayLoggedIn');
+
+      if (stayLoggedIn) {
+        console.log('stayLoggedIn', stayLoggedIn === 'true');
+        setDirectToHome(stayLoggedIn === 'true');
+      } else {
+        !isEmpty(userContext?.user) && setDirectToHome(true);
+      }
+    };
+    getMode();
+  }, [userContext?.user]);
+
   return (
     <Stack.Navigator
-      initialRouteName={!isEmpty(userContext?.user) ? 'AppDrawer' : 'Signup'}
+      initialRouteName={directToHome ? 'AppDrawer' : 'Signup'}
       screenOptions={{
         headerShown: false,
       }}>

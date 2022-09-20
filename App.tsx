@@ -1,8 +1,9 @@
 import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, Button, View} from 'react-native';
-import {NativeBaseProvider} from 'native-base';
+import {NativeBaseProvider, StorageManager, ColorMode} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Intro from './src/screens/Intro';
 import Auth from './src/screens/Auth';
@@ -14,11 +15,29 @@ const App = () => {
   const [showRealApp, setShowRealApp] = useState<boolean>(false);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
 
+  const colorModeManager: StorageManager = {
+    get: async () => {
+      try {
+        let val = await AsyncStorage.getItem('@color-mode');
+        return val === 'dark' ? 'dark' : 'light';
+      } catch (e) {
+        return 'light';
+      }
+    },
+    set: async (value: ColorMode) => {
+      try {
+        value && (await AsyncStorage.setItem('@color-mode', value));
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  };
+
   console.log('App', authenticated);
   return (
     <UserProvider>
       <NavigationContainer>
-        <NativeBaseProvider>
+        <NativeBaseProvider colorModeManager={colorModeManager}>
           {authenticated ? (
             <AppStack />
           ) : (
