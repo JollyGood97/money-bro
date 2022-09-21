@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState} from 'react';
+import React, {FC, useContext, useEffect, useState, useCallback} from 'react';
 
 import {
   Button,
@@ -12,6 +12,7 @@ import {
   HStack,
   Link,
   Checkbox,
+  View,
 } from 'native-base';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
@@ -21,6 +22,9 @@ import AppStackParamList from '../../model/AppStackParamList';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 import {UserContext} from './../../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Auth from '../Auth';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import User from '../../model/User';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
@@ -28,8 +32,45 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [stayLoggedIn, setStayLoggedIn] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
 
   const userContext = useContext(UserContext);
+
+  const setUID = useCallback(async () => {
+    const cachedUID = await AsyncStorage.getItem('uid');
+
+    if (cachedUID) {
+      //  console.log('isDarkModeEnabled', isDarkModeEnabled === 'true');
+      userContext?.setUser({uid: cachedUID});
+    }
+  }, [userContext]);
+
+  // useEffect(() => {}, [authenticated, setUID, navigation]);
+
+  useEffect(() => {
+    if (authenticated) {
+      const usersRef = firestore().collection('users');
+      auth().onAuthStateChanged(user => {
+        if (user) {
+          usersRef
+            .doc(user.uid)
+            .get()
+            .then(document => {
+              const userData = document.data() as User;
+              userData && userContext?.setUser(userData);
+              navigation.navigate('AppDrawer');
+            })
+            .catch(error => {
+              //  setLoading(false)
+            });
+        } else {
+          // setLoading(false)
+        }
+      });
+      console.log('test');
+      //  setUID();
+    }
+  }, [authenticated, navigation]);
 
   const onLoginPress = () => {
     auth()
@@ -146,6 +187,11 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
             </Checkbox>
           </HStack>
         </VStack>
+        <VStack>
+          <Text> Or use your fingerprint to login:</Text>
+
+          <Auth setAuthenticated={setAuthenticated} />
+        </VStack>
       </Box>
     </Center>
   );
@@ -167,3 +213,24 @@ export default Signup;
 //     backgroundColor: '#16a34a',
 //   },
 // });
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    padding: 10,
+    justifyContent: 'center',
+  },
+  titleStyle: {
+    padding: 10,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  paragraphStyle: {
+    padding: 20,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+});

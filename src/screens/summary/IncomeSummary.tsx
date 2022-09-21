@@ -1,19 +1,19 @@
 import React, {FC} from 'react';
 import {Text, View} from 'react-native';
 
-type ViewSummaryProps = {};
+type IncomeSummaryProps = {};
 
-const ViewSummary: FC<ViewSummaryProps> = (props: ViewSummaryProps) => {
+const IncomeSummary: FC<IncomeSummaryProps> = (props: IncomeSummaryProps) => {
   const {} = props;
 
   return (
     <View>
-      <Text>Summary</Text>
+      <Text>Income Summary</Text>
     </View>
   );
 };
 
-export default ViewSummary;
+export default IncomeSummary;
 
 // const styles = StyleSheet.create({
 //   container: {

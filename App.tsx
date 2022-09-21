@@ -1,9 +1,10 @@
 import 'react-native-gesture-handler';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Button, View} from 'react-native';
 import {NativeBaseProvider, StorageManager, ColorMode} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 
 import Intro from './src/screens/Intro';
 import Auth from './src/screens/Auth';
@@ -14,6 +15,15 @@ import AppStack from './src/routes/AppStack';
 const App = () => {
   const [showRealApp, setShowRealApp] = useState<boolean>(false);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
+  // useEffect(() => {
+  //   const enable = async () => {
+  //     await firestore().settings({
+  //       persistence: true, // disable offline persistence
+  //     });
+  //   };
+
+  //   enable();
+  // }, []);
 
   const colorModeManager: StorageManager = {
     get: async () => {
@@ -33,55 +43,27 @@ const App = () => {
     },
   };
 
-  console.log('App', authenticated);
   return (
     <UserProvider>
       <NavigationContainer>
         <NativeBaseProvider colorModeManager={colorModeManager}>
-          {authenticated ? (
+          {showRealApp ? (
             <AppStack />
           ) : (
-            <>
-              {showRealApp ? (
-                <SafeAreaView style={styles.container}>
-                  <View style={styles.container}>
-                    <Auth setAuthenticated={setAuthenticated} />
-                    <Button
-                      title="Show Intro Slider again"
-                      onPress={() => setShowRealApp(false)}
-                    />
-                  </View>
-                </SafeAreaView>
-              ) : (
-                <Intro setShowRealApp={setShowRealApp} />
-              )}
-            </>
+            // <SafeAreaView style={styles.container}>
+            //   <View style={styles.container}>
+            //     <Button
+            //       title="Show Intro Slider again"
+            //       onPress={() => setShowRealApp(false)}
+            //     />
+            //   </View>
+            // </SafeAreaView>
+            <Intro setShowRealApp={setShowRealApp} />
           )}
         </NativeBaseProvider>
       </NavigationContainer>
     </UserProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    padding: 10,
-    justifyContent: 'center',
-  },
-  titleStyle: {
-    padding: 10,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  paragraphStyle: {
-    padding: 20,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-});
 
 export default App;

@@ -1,8 +1,9 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Dashboard from '../screens/dashboard/Dashboard';
-import ViewSummary from '../screens/summary/ViewSummary';
+import ViewSummary from '../screens/summary/OverallSummary';
 import Settings from '../screens/settings/Settings';
+import SummaryTabs from './SummaryTabs';
 // import {Icon} from 'native-base';
 
 const Drawer = createDrawerNavigator();
@@ -14,8 +15,8 @@ const AppDrawer = () => {
       <Drawer.Screen name="Dashboard" component={Dashboard} />
 
       <Drawer.Screen
-        name="Summary"
-        component={ViewSummary}
+        name="View Summary"
+        component={SummaryTabs}
         //   options={{
         //     drawerIcon: ({ focused, size }) => (
         //         <Icon

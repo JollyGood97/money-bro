@@ -85,6 +85,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
               }}
               colorScheme="indigo"
               onPress={async () => {
+                console.log('modal', userID);
                 await addIncomeExpense({
                   type,
                   description,

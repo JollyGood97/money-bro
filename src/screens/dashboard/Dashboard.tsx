@@ -37,7 +37,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
   const userContext = useContext(UserContext);
   const userID = userContext?.user?.uid || '';
 
-  const currentMonth = month[new Date().getMonth()];
+  const currentMonth = month[new Date().getMonth()]; // pass number to firestore so can sort
   const {
     isSuccess,
     isLoading,
@@ -46,40 +46,41 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
     data = [],
   } = useGetIncomeExpenseQuery({uid: userID});
 
-  // const calculateData = useCallback(() => {
-  //   let totalIncome = 0;
-  //   let totalExpense = 0;
-  //   let total = 0;
+  const calculateData = useCallback(() => {
+    let totalIncome = 0;
+    let totalExpense = 0;
+    let total = 0;
 
-  //   if (!isEmpty(data)) {
-  //     const filteredData = data.filter(
-  //       item => item.uid === userID && item.month === currentMonth,
-  //     );
-  //     filteredData.forEach(item => {
-  //       if (item.type === INCOME) {
-  //         totalIncome += parseInt(item.amount, 10);
-  //       } else {
-  //         totalExpense += parseInt(item.amount, 10);
-  //       }
-  //     });
-  //     total = totalExpense + totalIncome;
-  //     const incomePercentage = (totalIncome / total) * 100;
-  //     const expensePercentage = (totalExpense / total) * 100;
-  //     setSeries([expensePercentage, incomePercentage]);
-  //     setBalance(totalIncome - totalExpense);
-  //   }
-  // }, [currentMonth, data, userID]);
+    if (!isEmpty(data)) {
+      const filteredData = data.filter(
+        item => item.uid === userID && item.month === currentMonth,
+      );
+      filteredData.forEach(item => {
+        if (item.type === INCOME) {
+          totalIncome += parseInt(item.amount, 10);
+        } else {
+          totalExpense += parseInt(item.amount, 10);
+        }
+      });
+      total = totalExpense + totalIncome;
+      const incomePercentage = (totalIncome / total) * 100;
+      const expensePercentage = (totalExpense / total) * 100;
+      setSeries([expensePercentage, incomePercentage]);
+      setBalance(totalIncome - totalExpense);
+    }
+  }, [currentMonth, data, userID]);
 
-  // useEffect(() => {
-  //   calculateData();
-  // }, [calculateData]);
+  useEffect(() => {
+    calculateData();
+    return () => calculateData(); // test this (unsubscribe when no longer in use)
+  }, [calculateData]);
+  //  console.log(isSuccess, isLoading, isError, error, data)
 
   return (
     <ScrollView>
       <View padding={10} bg={useColorModeValue('#e0e7ff', '#000e21')}>
         <Center>
           <Text>Data for: {currentMonth}</Text>
-          {console.log(isSuccess, isLoading, isError, error, data)}
           <PieChart
             widthAndHeight={widthAndHeight}
             series={series}
@@ -92,12 +93,12 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
           <HStack m={5}>
             <HStack space={2} marginRight={5}>
               <View style={styles.circleGreen} />
-              <Text>Income - ${series[1].toString()}%</Text>
+              <Text>Income - {series[1].toFixed(2).toString()}%</Text>
             </HStack>
 
             <HStack space={2}>
               <View style={styles.circleRed} />
-              <Text>Expense - ${series[0].toString()}%</Text>
+              <Text>Expense - {series[0].toFixed(2).toString()}%</Text>
             </HStack>
           </HStack>
           <HStack>

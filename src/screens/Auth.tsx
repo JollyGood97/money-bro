@@ -1,6 +1,20 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
+import {StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import {
+  Button,
+  Input,
+  FormControl,
+  Text,
+  Box,
+  Center,
+  Heading,
+  VStack,
+  HStack,
+  Link,
+  Checkbox,
+  View,
+} from 'native-base';
 
 type AuthProps = {
   setAuthenticated: Function;
@@ -38,40 +52,35 @@ const Auth: FC<AuthProps> = (props: AuthProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={showAuthenticationDialog}>
+    <Center>
+      <Button onPress={showAuthenticationDialog}>
         <Text>Authenticate</Text>
-      </TouchableOpacity>
-      <Text
-        style={
-          styles.biometryText
-        }>{`biometryType is  ${newBiometryType}`}</Text>
-    </SafeAreaView>
+      </Button>
+      <Text>{`biometryType is  ${newBiometryType}`}</Text>
+    </Center>
   );
 };
 
 export default Auth;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonStyle: {
-    width: '70%',
-    borderRadius: 25,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {color: '#fff', fontSize: 17, fontWeight: 'bold'},
-  biometryText: {
-    color: '#000',
-    fontSize: 17,
-    fontWeight: 'bold',
-    marginTop: 30,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   buttonStyle: {
+//     width: '70%',
+//     borderRadius: 25,
+//     padding: 10,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   buttonText: {color: '#fff', fontSize: 17, fontWeight: 'bold'},
+//   biometryText: {
+//     color: '#000',
+//     fontSize: 17,
+//     fontWeight: 'bold',
+//     marginTop: 30,
+//   },
+// });
