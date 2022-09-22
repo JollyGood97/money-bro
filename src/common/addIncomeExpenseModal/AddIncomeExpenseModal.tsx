@@ -90,7 +90,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
                   type,
                   description,
                   amount,
-                  month: currentMonth,
+                  month: new Date().getMonth(),
                   uid: userID,
                 }).then(() => {
                   setShowModal(false);

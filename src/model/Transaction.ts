@@ -3,7 +3,7 @@ type Transaction = {
   type: 'Income' | 'Expense';
   amount: string;
   description: string;
-  month: string;
+  month: number;
   id: string;
 };
 

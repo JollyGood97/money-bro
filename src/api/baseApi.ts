@@ -2,6 +2,8 @@ import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import firestore from '@react-native-firebase/firestore';
 import Transaction from '../model/Transaction';
 
+const timestamp = firestore.FieldValue.serverTimestamp();
+
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fakeBaseQuery(),
@@ -16,6 +18,8 @@ export const baseApi = createApi({
           await firestore()
             .collection('accounts')
             .where('uid', '==', uid)
+            // .orderBy('month', 'asc')
+            .orderBy('createdAt', 'asc')
             .get()
             .then(querySnapshot => {
               querySnapshot.forEach(documentSnapshot => {
@@ -36,7 +40,9 @@ export const baseApi = createApi({
       invalidatesTags: ['newIncomeExpense'],
       async queryFn(data) {
         try {
-          await firestore().collection('accounts').add(data);
+          await firestore()
+            .collection('accounts')
+            .add({...data, createdAt: timestamp});
           return {data};
         } catch (error) {
           return {error};

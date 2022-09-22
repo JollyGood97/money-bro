@@ -46,6 +46,8 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
     data = [],
   } = useGetIncomeExpenseQuery({uid: userID});
 
+  // console.log('data', data);
+
   const calculateData = useCallback(() => {
     let totalIncome = 0;
     let totalExpense = 0;
@@ -53,7 +55,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
 
     if (!isEmpty(data)) {
       const filteredData = data.filter(
-        item => item.uid === userID && item.month === currentMonth,
+        item => item.uid === userID && item.month === new Date().getMonth(), // uid comparison is not needed
       );
       filteredData.forEach(item => {
         if (item.type === INCOME) {
@@ -68,7 +70,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
       setSeries([expensePercentage, incomePercentage]);
       setBalance(totalIncome - totalExpense);
     }
-  }, [currentMonth, data, userID]);
+  }, [data, userID]);
 
   useEffect(() => {
     calculateData();

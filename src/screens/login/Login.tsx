@@ -28,7 +28,7 @@ import User from '../../model/User';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
-const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
+const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [stayLoggedIn, setStayLoggedIn] = useState<boolean>(false);
@@ -70,6 +70,7 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
       console.log('test');
       //  setUID();
     }
+    // have to figure out how to avoid passing user context as dependency
   }, [authenticated, navigation]);
 
   const onLoginPress = () => {
@@ -197,7 +198,7 @@ const Signup: FC<LoginProps> = ({navigation}: LoginProps) => {
   );
 };
 
-export default Signup;
+export default Login;
 
 // const styles = StyleSheet.create({
 //   circleRed: {
