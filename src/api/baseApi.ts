@@ -1,13 +1,14 @@
 import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import firestore from '@react-native-firebase/firestore';
 import Transaction from '../model/Transaction';
+import FixedDeposit from '../model/FixedDeposit';
 
 const timestamp = firestore.FieldValue.serverTimestamp();
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['newIncomeExpense'],
+  tagTypes: ['newIncomeExpense', 'newFixedDeposit'],
   endpoints: builder => ({
     getIncomeExpense: builder.query<Transaction[], any>({
       providesTags: ['newIncomeExpense'],
@@ -49,7 +50,52 @@ export const baseApi = createApi({
         }
       },
     }),
+    getFixedDeposits: builder.query<FixedDeposit[], any>({
+      providesTags: ['newFixedDeposit'],
+      async queryFn(arg) {
+        const {uid} = arg;
+        try {
+          const fixedDepositsData: any = [];
+          await firestore()
+            .collection('fixedDeposits')
+            .where('uid', '==', uid)
+            // .orderBy('month', 'asc')
+            // .orderBy('createdAt', 'asc')
+            .get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(documentSnapshot => {
+                fixedDepositsData.push({
+                  id: documentSnapshot.id,
+                  ...documentSnapshot.data(),
+                });
+              });
+            });
+
+          return {data: fixedDepositsData};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
+    addFixedDeposit: builder.mutation({
+      invalidatesTags: ['newFixedDeposit'],
+      async queryFn(data) {
+        try {
+          await firestore()
+            .collection('fixedDeposits')
+            .add({...data, createdAt: timestamp});
+          return {data};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
   }),
 });
 
-export const {useGetIncomeExpenseQuery, useAddIncomeExpenseMutation} = baseApi;
+export const {
+  useGetIncomeExpenseQuery,
+  useAddIncomeExpenseMutation,
+  useGetFixedDepositsQuery,
+  useAddFixedDepositMutation,
+} = baseApi;

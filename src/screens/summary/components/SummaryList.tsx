@@ -21,7 +21,6 @@ type SummaryListProps = {
 const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
   // const data: Transaction[] = props.route.params.data || [];
   const {data, type} = props;
-  console.log(data);
 
   return (
     <Box>
@@ -37,8 +36,8 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
         );
         if (!isEmpty(dataForMonth)) {
           return (
-            <>
-              <Heading fontSize="lg" p="4" pb="3" key={key}>
+            <Box key={key}>
+              <Heading fontSize="lg" p="4" pb="3">
                 {monthInText}
               </Heading>
 
@@ -86,7 +85,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                 )}
                 keyExtractor={item => item.id}
               />
-            </>
+            </Box>
           );
         } else {
           return <></>;

@@ -83,6 +83,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
                 base: '50%',
                 md: '100%',
               }}
+              isLoading={isLoading}
               colorScheme="indigo"
               onPress={async () => {
                 console.log('modal', userID);

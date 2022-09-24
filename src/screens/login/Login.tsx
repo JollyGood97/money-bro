@@ -174,9 +174,9 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
               isChecked={stayLoggedIn}
               colorScheme="info"
               value={'stayLoggedIn'}
-              onChange={async () => {
-                setStayLoggedIn(!stayLoggedIn);
-                if (stayLoggedIn) {
+              onChange={async isEnabled => {
+                setStayLoggedIn(isEnabled);
+                if (isEnabled) {
                   try {
                     await AsyncStorage.setItem('stayLoggedIn', 'true');
                   } catch (e) {

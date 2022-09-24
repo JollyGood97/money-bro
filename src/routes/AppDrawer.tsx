@@ -3,6 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Dashboard from '../screens/dashboard/Dashboard';
 import ViewSummary from '../screens/summary/ViewSummary';
 import Settings from '../screens/settings/Settings';
+import ViewBankDetails from '../screens/bank/ViewBankDetails';
 // import {Icon} from 'native-base';
 
 const Drawer = createDrawerNavigator();
@@ -26,6 +27,7 @@ const AppDrawer = () => {
         //     ),
         // }}
       />
+      <Drawer.Screen name="Bank Details" component={ViewBankDetails} />
       <Drawer.Screen name="Settings" component={Settings} />
     </Drawer.Navigator>
   );
