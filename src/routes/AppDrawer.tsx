@@ -4,6 +4,7 @@ import Dashboard from '../screens/dashboard/Dashboard';
 import ViewSummary from '../screens/summary/ViewSummary';
 import Settings from '../screens/settings/Settings';
 import ViewBankDetails from '../screens/bank/ViewBankDetails';
+import ViewLeaderBoard from '../screens/leaderboard/ViewLeaderboard';
 // import {Icon} from 'native-base';
 
 const Drawer = createDrawerNavigator();
@@ -11,7 +12,7 @@ const Drawer = createDrawerNavigator();
 // drawer navigation options
 const AppDrawer = () => {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator initialRouteName="Dashboard">
       <Drawer.Screen name="Dashboard" component={Dashboard} />
 
       <Drawer.Screen
@@ -28,6 +29,8 @@ const AppDrawer = () => {
         // }}
       />
       <Drawer.Screen name="Bank Details" component={ViewBankDetails} />
+      <Drawer.Screen name="Leaderboard" component={ViewLeaderBoard} />
+
       <Drawer.Screen name="Settings" component={Settings} />
     </Drawer.Navigator>
   );

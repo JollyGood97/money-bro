@@ -10,9 +10,10 @@ import {
   useColorModeValue,
   useColorMode,
   Box,
+  Heading,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
-import AddIncomeExpenseModal from '../../common/addIncomeExpenseModal/AddIncomeExpenseModal';
+import AddIncomeExpenseModal from '../../common/AddIncomeExpenseModal';
 import Transaction from '../../model/Transaction';
 import {EXPENSE, INCOME, month} from '../../constants/Constants';
 import {UserContext} from '../../context/UserContext';
@@ -22,7 +23,7 @@ import {isEmpty} from 'lodash';
 // move to const file
 const widthAndHeight = 250;
 // const series = [50, 50]; // need to calculate
-const sliceColor = ['#ff7700', '#16a34a']; // need to show no data msg
+const sliceColor = ['#facc15', '#4f46e5'];
 
 type DashboardProps = {};
 
@@ -37,7 +38,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
   const userContext = useContext(UserContext);
   const userID = userContext?.user?.uid || '';
 
-  const currentMonth = month[new Date().getMonth()]; // pass number to firestore so can sort
+  const currentMonth = month[new Date().getMonth()];
   const {
     isSuccess,
     isLoading,
@@ -55,8 +56,9 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
 
     if (!isEmpty(data)) {
       const filteredData = data.filter(
-        item => item.uid === userID && item.month === new Date().getMonth(), // uid comparison is not needed
+        item => item.month === new Date().getMonth(), // uid comparison is not needed
       );
+
       filteredData.forEach(item => {
         if (item.type === INCOME) {
           totalIncome += parseInt(item.amount, 10);
@@ -65,12 +67,17 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
         }
       });
       total = totalExpense + totalIncome;
-      const incomePercentage = (totalIncome / total) * 100;
-      const expensePercentage = (totalExpense / total) * 100;
+
+      const incomePercentage = (totalIncome / total) * 100 || 0;
+      const expensePercentage = (totalExpense / total) * 100 || 0;
+      // if (!isNaN(expensePercentage) && !isNaN(incomePercentage)) {
+
+      // }
       setSeries([expensePercentage, incomePercentage]);
+      // console.log(expensePercentage, incomePercentage);
       setBalance(totalIncome - totalExpense);
     }
-  }, [data, userID]);
+  }, [data]);
 
   useEffect(() => {
     calculateData();
@@ -79,68 +86,67 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
   //  console.log(isSuccess, isLoading, isError, error, data)
 
   return (
-    <ScrollView>
-      <View padding={10} bg={useColorModeValue('#e0e7ff', '#000e21')}>
-        <Center>
-          <Text>Data for: {currentMonth}</Text>
-          <PieChart
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={sliceColor}
-            doughnut
-            coverRadius={0.45}
-            coverFill={colorMode === 'light' ? '#e0e7ff' : '#000e21'}
-          />
+    <View height={'100%'} bg={useColorModeValue('#e0e7ff', '#000e21')}>
+      <Center padding={6}>
+        <Heading marginBottom={4}>{currentMonth}</Heading>
+        <PieChart
+          widthAndHeight={widthAndHeight}
+          series={series}
+          sliceColor={sliceColor}
+          doughnut
+          coverRadius={0.45}
+          coverFill={colorMode === 'light' ? '#e0e7ff' : '#000e21'}
+        />
 
-          <HStack m={5}>
-            <HStack space={2} marginRight={5}>
-              <View style={styles.circleGreen} />
-              <Text>Income - {series[1].toFixed(2).toString()}%</Text>
-            </HStack>
+        <HStack m={5}>
+          <HStack space={2} marginRight={5}>
+            <View style={styles.circleGreen} />
+            <Text>Income - {series[1].toFixed(2).toString()}%</Text>
+          </HStack>
 
-            <HStack space={2}>
-              <View style={styles.circleRed} />
-              <Text>Expense - {series[0].toFixed(2).toString()}%</Text>
-            </HStack>
+          <HStack space={2}>
+            <View style={styles.circleRed} />
+            <Text>Expense - {series[0].toFixed(2).toString()}%</Text>
           </HStack>
-          <HStack>
-            <Button
-              marginRight={10}
-              colorScheme={'success'}
-              onPress={() => {
-                setShowAddIncomeModal(true);
-              }}>
-              Add Income
-            </Button>
-            <Button
-              backgroundColor={'#ff7700'}
-              onPress={() => {
-                setShowAddExpenseModal(true);
-              }}>
-              Add Expense
-            </Button>
-          </HStack>
-          <Center m={10}>
-            <Text>Balance</Text>
-            <Box
-              bgColor={'success.200'}
-              paddingLeft={3}
-              paddingRight={3}
-              rounded={10}>
-              <Text fontSize={30} bold color={'black'}>
-                {balance.toFixed(2)} $
-              </Text>
-            </Box>
-          </Center>
-          <Center>
-            <Text>Goal</Text>
-            <Text fontSize={30} bold>
-              100.00 $
+        </HStack>
+        <HStack>
+          <Button
+            marginRight={10}
+            backgroundColor="#4f46e5"
+            colorScheme={'success'}
+            onPress={() => {
+              setShowAddIncomeModal(true);
+            }}>
+            Add Income
+          </Button>
+          <Button
+            backgroundColor={'#facc15'}
+            onPress={() => {
+              setShowAddExpenseModal(true);
+            }}>
+            <Text color={'black'}>Add Expense</Text>
+          </Button>
+        </HStack>
+        <Center m={10}>
+          <Text>Balance</Text>
+          <Box
+            bgColor={'indigo.400'}
+            paddingLeft={3}
+            paddingRight={3}
+            rounded={10}>
+            <Text fontSize={30} bold color={'black'}>
+              {balance.toFixed(2)} $
             </Text>
-          </Center>
-          {/* </VStack> */}
+          </Box>
         </Center>
-      </View>
+        <Center>
+          <Text>Goal</Text>
+          <Text fontSize={30} bold>
+            100.00 $
+          </Text>
+        </Center>
+        {/* </VStack> */}
+      </Center>
       <AddIncomeExpenseModal
         type={INCOME}
         setShowModal={setShowAddIncomeModal}
@@ -155,7 +161,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
         currentMonth={currentMonth}
         userID={userID}
       />
-    </ScrollView>
+    </View>
   );
 };
 
@@ -166,12 +172,12 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 20 / 2,
-    backgroundColor: '#ff7700',
+    backgroundColor: '#facc15',
   },
   circleGreen: {
     width: 20,
     height: 20,
     borderRadius: 20 / 2,
-    backgroundColor: '#16a34a',
+    backgroundColor: '#4f46e5',
   },
 });

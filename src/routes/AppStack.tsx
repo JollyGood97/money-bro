@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 
 // import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -12,29 +12,37 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
-const AppStack = () => {
+type AppStackProps = {
+  isExistingUser: boolean;
+  directToHome: boolean;
+  cachedID?: string;
+};
+
+const AppStack: FC<AppStackProps> = (props: AppStackProps) => {
   const userContext = useContext(UserContext);
-  const [directToHome, setDirectToHome] = useState<boolean>(false);
-  const [isExistingUser, setIsExistingUser] = useState<boolean>(false);
-
+  // const [directToHome, setDirectToHome] = useState<boolean>(false);
+  // const [isExistingUser, setIsExistingUser] = useState<boolean>(false);
+  const {directToHome, isExistingUser, cachedID} = props;
   useEffect(() => {
-    const setPreferences = async () => {
-      const stayLoggedIn = await AsyncStorage.getItem('stayLoggedIn');
-      const userID = await AsyncStorage.getItem('uid');
-
-      userID && setIsExistingUser(true);
-      if (stayLoggedIn) {
-        console.log(userID);
-        setDirectToHome(stayLoggedIn === 'true');
-      } else {
-        !isEmpty(userContext?.user) && setDirectToHome(true);
-      }
-    };
-    setPreferences();
+    // const setPreferences = async () => {
+    //   const stayLoggedIn = await AsyncStorage.getItem('stayLoggedIn');
+    //   const userID = await AsyncStorage.getItem('uid');
+    //   userID && setIsExistingUser(true);
+    //   if (stayLoggedIn) {
+    //     console.log('stayLoggedIn', stayLoggedIn);
+    //     setDirectToHome(stayLoggedIn === 'true');
+    //   } else {
+    // //    !isEmpty(userContext?.user) && setDirectToHome(true);
+    //   }
+    // };
+    // setPreferences();
     // move this to the App as a function not a useeffect, then existinguser will work.
   }, []);
 
-  console.log(isExistingUser);
+  useEffect(() => {
+    cachedID && userContext?.setUser({uid: cachedID});
+  }, []);
+  console.log('isExistingUser', isExistingUser);
 
   return (
     <Stack.Navigator

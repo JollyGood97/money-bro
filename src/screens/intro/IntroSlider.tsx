@@ -1,6 +1,14 @@
 import React, {FC} from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
+
+// Have to ignore typescript as following imports are images.
+// @ts-ignore
+import Slide1 from '../../assets/introSlider/slide1.svg';
+// @ts-ignore
+import Slide2 from '../../assets/introSlider/slide2.svg';
+// @ts-ignore
+import AppLogo from '../../assets/appLogo.svg';
 
 type IntroProps = {
   setShowRealApp: Function;
@@ -23,8 +31,7 @@ const Intro: FC<IntroProps> = (props: IntroProps) => {
         {item.title !== '' && (
           <Text style={styles.introTextStyle}>{item.title}</Text>
         )}
-
-        <Image style={styles.imageStyle} source={item.image} />
+        {item.image}
         <Text style={styles.introTextStyle}>{item.text}</Text>
       </View>
     );
@@ -76,30 +83,23 @@ const styles = StyleSheet.create({
 const slides = [
   {
     key: 's1',
-    text: "Don't know a thing about managing finances?",
+    text: 'Hard to keep track of your finances?',
     title: '',
-    image: require('../../assets/slide1.png'),
+    image: <Slide1 />,
     backgroundColor: '#000080',
   },
   {
     key: 's2',
     title: '',
     text: 'Having trouble remembering where your money disappeared to?',
-    image: require('../../assets/slide2.png'),
-    backgroundColor: '#febe29',
-  },
-  {
-    key: 's3',
-    title: '',
-    text: 'Hate anything related to the word finance? Need help?',
-    image: require('../../assets/slide3.png'),
+    image: <Slide2 />,
     backgroundColor: '#22bcb5',
   },
   {
-    key: 's4',
+    key: 's3',
     title: "Don't Worry!",
     text: 'MoneyBro will take care of it!',
-    image: require('../../assets/appLogo.png'),
+    image: <AppLogo />,
     backgroundColor: '#3395ff',
   },
 ];

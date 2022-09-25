@@ -10,11 +10,14 @@ export const UserContext = createContext<UserContextValue | undefined>(
   undefined,
 );
 
-const UserProvider: FC = ({children}: {children?: ReactNode}) => {
+type UserProviderProps = {
+  children: ReactNode;
+};
+const UserProvider: FC<UserProviderProps> = (props: UserProviderProps) => {
   const [user, setUser] = useState<User>({} as User);
   return (
     <UserContext.Provider value={{user, setUser}}>
-      {children}
+      {props.children}
     </UserContext.Provider>
   );
 };

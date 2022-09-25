@@ -14,13 +14,20 @@ import {
   Link,
   Checkbox,
   View,
+  Image,
+  Icon,
+  Pressable,
 } from 'native-base';
+// @ts-ignore
+import FingerprintIcon from '../../../assets/fingerprint.svg';
 
-type AuthProps = {
+type FingerprintScanProps = {
   setAuthenticated: Function;
 };
 
-const Auth: FC<AuthProps> = (props: AuthProps) => {
+const FingerprintScan: FC<FingerprintScanProps> = (
+  props: FingerprintScanProps,
+) => {
   const [newBiometryType, setBiometryType] = useState<string | null>(null);
 
   const {setAuthenticated} = props;
@@ -53,15 +60,22 @@ const Auth: FC<AuthProps> = (props: AuthProps) => {
 
   return (
     <Center>
-      <Button onPress={showAuthenticationDialog}>
-        <Text>Authenticate</Text>
-      </Button>
-      <Text>{`biometryType is  ${newBiometryType}`}</Text>
+      <Pressable onPress={showAuthenticationDialog}>
+        <Icon
+          as={<FingerprintIcon />}
+          name="android1"
+          _dark={{
+            color: 'white',
+          }}
+          size="120"
+        />
+      </Pressable>
+      <Text>Touch</Text>
     </Center>
   );
 };
 
-export default Auth;
+export default FingerprintScan;
 
 // const styles = StyleSheet.create({
 //   container: {

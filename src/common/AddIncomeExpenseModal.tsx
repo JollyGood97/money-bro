@@ -8,8 +8,9 @@ import {
   Modal,
   FormControl,
   Text,
+  Heading,
 } from 'native-base';
-import {useAddIncomeExpenseMutation} from '../../api/baseApi';
+import {useAddIncomeExpenseMutation} from '../api/baseApi';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 
 type AddIncomeExpenseModalProps = {
@@ -36,16 +37,21 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
       <Modal.Content maxWidth="400px">
         <Modal.CloseButton />
-        <Modal.Header bgColor={'success.200'}>
-          <Text>Add {type}</Text>
-        </Modal.Header>
+        {/* <Modal.Header bgColor={'success.200'}>
+       
+        </Modal.Header> */}
         <Modal.Body>
+          <Heading m={2}>Add {type}</Heading>
           <FormControl>
-            <FormControl.Label>Description</FormControl.Label>
+            <FormControl.Label>
+              <Text fontWeight={'bold'}>Description</Text>
+            </FormControl.Label>
             <Input onChangeText={text => setDescription(text.trim())} />
           </FormControl>
           <FormControl mt="3">
-            <FormControl.Label>Amount</FormControl.Label>
+            <FormControl.Label>
+              <Text fontWeight={'bold'}> Amount</Text>
+            </FormControl.Label>
             <InputGroup
               w={{
                 base: '70%',
@@ -63,9 +69,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
               <InputRightAddon children={'$'} />
             </InputGroup>
           </FormControl>
-        </Modal.Body>
-        <Modal.Footer bgColor={'success.200'}>
-          <Button.Group space={2}>
+          <Button.Group space={2} marginTop={8}>
             <Button
               w={{
                 base: '50%',
@@ -73,6 +77,8 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
               }}
               variant="outline"
               colorScheme="indigo"
+              borderColor="#4f46e5"
+              borderWidth="1"
               onPress={() => {
                 setShowModal(false);
               }}>
@@ -101,7 +107,11 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
               Save
             </Button>
           </Button.Group>
-        </Modal.Footer>
+        </Modal.Body>
+
+        {/* <Modal.Footer bgColor={'success.200'}>
+
+        </Modal.Footer> */}
       </Modal.Content>
     </Modal>
   );

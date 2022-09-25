@@ -6,7 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 
-import Intro from './src/screens/Intro';
+import IntroSlider from './src/screens/intro/IntroSlider';
 import Auth from './src/screens/Auth';
 import AppDrawer from './src/routes/AppDrawer';
 import UserProvider from './src/context/UserContext';
@@ -14,16 +14,27 @@ import AppStack from './src/routes/AppStack';
 
 const App = () => {
   const [showRealApp, setShowRealApp] = useState<boolean>(false);
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
-  // useEffect(() => {
-  //   const enable = async () => {
-  //     await firestore().settings({
-  //       persistence: true, // disable offline persistence
-  //     });
-  //   };
 
-  //   enable();
-  // }, []);
+  const [directToHome, setDirectToHome] = useState<boolean>(false);
+  const [isExistingUser, setIsExistingUser] = useState<boolean>(false);
+  const [cachedID, setCachedID] = useState<string | undefined>('');
+
+  useEffect(() => {
+    const setPreferences = async () => {
+      const stayLoggedIn = await AsyncStorage.getItem('stayLoggedIn');
+      const userID = await AsyncStorage.getItem('uid');
+
+      userID && setIsExistingUser(true);
+      userID && setCachedID(userID);
+      if (stayLoggedIn) {
+        console.log('stayLoggedIn', stayLoggedIn);
+        setDirectToHome(stayLoggedIn === 'true');
+      } else {
+        //   !isEmpty(userContext?.user) && setDirectToHome(true);
+      }
+    };
+    setPreferences();
+  }, []);
 
   const colorModeManager: StorageManager = {
     get: async () => {
@@ -48,7 +59,11 @@ const App = () => {
       <NavigationContainer>
         <NativeBaseProvider colorModeManager={colorModeManager}>
           {showRealApp ? (
-            <AppStack />
+            <AppStack
+              directToHome={directToHome}
+              isExistingUser={isExistingUser}
+              cachedID={cachedID}
+            />
           ) : (
             // <SafeAreaView style={styles.container}>
             //   <View style={styles.container}>
@@ -58,7 +73,7 @@ const App = () => {
             //     />
             //   </View>
             // </SafeAreaView>
-            <Intro setShowRealApp={setShowRealApp} />
+            <IntroSlider setShowRealApp={setShowRealApp} />
           )}
         </NativeBaseProvider>
       </NavigationContainer>

@@ -37,6 +37,29 @@ export const baseApi = createApi({
         }
       },
     }),
+    getAllUsersIncomeExpense: builder.query<Transaction[], any>({
+      providesTags: ['newIncomeExpense'],
+      async queryFn() {
+        try {
+          const accountsData: any = [];
+          await firestore()
+            .collection('accounts')
+            .get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(documentSnapshot => {
+                accountsData.push({
+                  id: documentSnapshot.id,
+                  ...documentSnapshot.data(),
+                });
+              });
+            });
+
+          return {data: accountsData};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
     addIncomeExpense: builder.mutation({
       invalidatesTags: ['newIncomeExpense'],
       async queryFn(data) {
@@ -95,6 +118,7 @@ export const baseApi = createApi({
 
 export const {
   useGetIncomeExpenseQuery,
+  useGetAllUsersIncomeExpenseQuery,
   useAddIncomeExpenseMutation,
   useGetFixedDepositsQuery,
   useAddFixedDepositMutation,

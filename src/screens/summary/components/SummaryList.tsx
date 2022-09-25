@@ -22,10 +22,18 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
   // const data: Transaction[] = props.route.params.data || [];
   const {data, type} = props;
 
+  const getTotalPerMonth = (dataForMonth: Transaction[]): number => {
+    let total = 0;
+
+    dataForMonth.forEach(transaction => {
+      total = total + parseInt(transaction.amount, 10);
+    });
+    return total;
+  };
   return (
     <Box>
       <Center>
-        <Heading fontSize="xl" p="4" pb="3">
+        <Heading fontSize="xl" marginTop={5}>
           {type === INCOME ? 'Income' : 'Expenses'}
         </Heading>
       </Center>
@@ -37,7 +45,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
         if (!isEmpty(dataForMonth)) {
           return (
             <Box key={key}>
-              <Heading fontSize="lg" p="4" pb="3">
+              <Heading marginTop={5} fontSize="lg" p="4" pb="3" key={key}>
                 {monthInText}
               </Heading>
 
@@ -45,15 +53,17 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                 data={dataForMonth}
                 renderItem={({item}) => (
                   <Box
+                    bg={'white'}
+                    // borderBottomLeftRadius={5}
+                    rounded="lg"
                     borderBottomWidth="1"
                     _dark={{
                       borderColor: 'muted.50',
                     }}
-                    borderColor="muted.800"
-                    m={5}
-                    pl={['0', '4']}
-                    pr={['0', '5']}
-                    py="2">
+                    borderColor="warmGray.300"
+                    p={2}
+                    marginLeft={5}
+                    marginRight={5}>
                     <HStack>
                       <Text
                         _dark={{
@@ -70,12 +80,14 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                     </Text> */}
 
                       <Spacer />
+
                       <Text
-                        fontSize="14px"
+                        fontSize="16px"
                         _dark={{
                           color: 'warmGray.50',
                         }}
-                        color="coolGray.800"
+                        bold
+                        color="indigo.900"
                         // alignSelf="flex-start"
                       >
                         $ {item.amount}
@@ -85,6 +97,33 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                 )}
                 keyExtractor={item => item.id}
               />
+              <HStack
+                p={2}
+                rounded={'lg'}
+                bgColor={'blue.200'}
+                marginRight={5}
+                marginLeft={5}>
+                <Text
+                  _dark={{
+                    color: 'warmGray.50',
+                  }}
+                  color="coolGray.800"
+                  bold>
+                  Total
+                </Text>
+                <Spacer />
+                <Text
+                  fontSize="16px"
+                  _dark={{
+                    color: 'warmGray.50',
+                  }}
+                  bold
+                  color="indigo.900"
+                  // alignSelf="flex-start"
+                >
+                  $ {getTotalPerMonth(dataForMonth)?.toString()}
+                </Text>
+              </HStack>
             </Box>
           );
         } else {

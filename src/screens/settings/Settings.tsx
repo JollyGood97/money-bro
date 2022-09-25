@@ -107,7 +107,11 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
               colorScheme="indigo"
               onPress={async () => {
                 userContext?.setUser({} as User);
-
+                // try {
+                //   await AsyncStorage.removeItem('uid');
+                // } catch (e) {
+                //   console.log('Error');
+                // }
                 try {
                   await AsyncStorage.setItem('stayLoggedIn', 'false');
                 } catch (e) {

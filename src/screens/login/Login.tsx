@@ -13,7 +13,12 @@ import {
   Link,
   Checkbox,
   View,
+  Divider,
+  useColorModeValue,
+  CloseIcon,
+  CheckIcon,
 } from 'native-base';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -22,9 +27,11 @@ import AppStackParamList from '../../model/AppStackParamList';
 // import {INCOME, EXPENSE} from '../../common/constants/Constants';
 import {UserContext} from './../../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Auth from '../Auth';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import FingerprintScan from './components/FingerprintScan';
+import {Pressable, SafeAreaView, StyleSheet} from 'react-native';
 import User from '../../model/User';
+import {isEmpty} from 'lodash';
+import AlertNotice from '../../common/Alert';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
@@ -33,21 +40,43 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
   const [password, setPassword] = useState<string>('');
   const [stayLoggedIn, setStayLoggedIn] = useState<boolean>(false);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
-
+  const [errorMessages, setErrorMessages] = useState<any>({
+    email: null,
+    password: null,
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const userContext = useContext(UserContext);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMsg, setAlertMsg] = useState<string>('');
 
-  const setUID = useCallback(async () => {
-    const cachedUID = await AsyncStorage.getItem('uid');
+  // const setUID = useCallback(async () => {
+  //   const cachedUID = await AsyncStorage.getItem('uid');
+  //   if (cachedUID) {
+  //     setCachedID(cachedUID);
+  //     //  console.log('isDarkModeEnabled', isDarkModeEnabled === 'true');
+  //     // userContext?.setUser({uid: cachedUID});
+  //   }
+  // }, []);
 
-    if (cachedUID) {
-      //  console.log('isDarkModeEnabled', isDarkModeEnabled === 'true');
-      userContext?.setUser({uid: cachedUID});
-    }
-  }, [userContext]);
+  // const cachedUID = async () => {
+  //   return await AsyncStorage.getItem('uid');
+  // };
 
-  // useEffect(() => {}, [authenticated, setUID, navigation]);
+  // useEffect(() => {
+  //   setUID();
+  // }, [setUID]);
+  // console.log('uid', userContext?.user?.uid);
+
+  // useEffect(() => {
+  //   setAuthenticated(authenticated);
+  // }, [authenticated]);
+
+  // useEffect(() => {
+  //   setUID();
+  // }, [authenticated, setUID, navigation]);
 
   useEffect(() => {
+    console.log('authenticated', authenticated);
     if (authenticated) {
       const usersRef = firestore().collection('users');
       auth().onAuthStateChanged(user => {
@@ -61,57 +90,113 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
               navigation.navigate('AppDrawer');
             })
             .catch(error => {
-              //  setLoading(false)
+              setShowAlert(true);
+              setAlertMsg('An unexpected error occurred: ' + error);
+              setIsLoading(false);
             });
         } else {
-          // setLoading(false)
+          setShowAlert(true);
+          setAlertMsg('User not found');
         }
       });
-      console.log('test');
-      //  setUID();
     }
     // have to figure out how to avoid passing user context as dependency
   }, [authenticated, navigation]);
 
-  const onLoginPress = () => {
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(response => {
-        const uid = response.user.uid;
-        const usersCollection = firestore().collection('users');
-        usersCollection
-          .doc(uid)
-          .get()
-          .then(async document => {
-            if (!document.exists) {
-              console.log('user not found');
-              return;
-            }
-            const existingUser = document.data();
-            if (existingUser) {
-              userContext?.setUser({
-                uid: existingUser.uid,
-                email: existingUser.email,
-                username: existingUser.username,
-                currency: userContext?.user?.currency,
-              });
-              try {
-                await AsyncStorage.setItem(
-                  'uid',
-                  JSON.stringify(response?.user?.uid),
-                );
-              } catch (e) {
-                console.log('error');
-              }
-              navigation.navigate('AppDrawer');
-            }
-          });
+  const validateForm = () => {
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    let isValid = true;
+
+    if (isEmpty(email) && isEmpty(password)) {
+      setErrorMessages({
+        email: 'Please enter your email address',
+        password: 'Please enter your password',
       });
+      isValid = false;
+    }
+    if (isEmpty(email)) {
+      setErrorMessages({
+        ...errorMessages,
+        email: 'Please enter your email address',
+      });
+      isValid = false;
+    }
+    if (isEmpty(password)) {
+      setErrorMessages({
+        ...errorMessages,
+        password: 'Please enter your password',
+      });
+      isValid = false;
+    }
+    if (emailRegex.test(email) === false) {
+      setErrorMessages({
+        ...errorMessages,
+        email: 'Please enter a valid email address',
+      });
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const onLoginPress = async () => {
+    if (validateForm()) {
+      setIsLoading(true);
+      try {
+        await auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(response => {
+            const uid = response.user.uid;
+            const usersCollection = firestore().collection('users');
+            usersCollection
+              .doc(uid)
+              .get()
+              .then(async document => {
+                if (!document.exists) {
+                  setShowAlert(true);
+                  setAlertMsg('User not found');
+                  return;
+                }
+                const existingUser = document.data();
+                if (existingUser) {
+                  userContext?.setUser({
+                    uid: existingUser.uid,
+                    email: existingUser.email,
+                    username: existingUser.username,
+                    currency: userContext?.user?.currency,
+                  });
+                  setIsLoading(false);
+                  try {
+                    await AsyncStorage.setItem(
+                      'uid',
+                      JSON.stringify(response?.user?.uid),
+                    );
+                  } catch (e) {
+                    setIsLoading(false);
+                  }
+                  navigation.navigate('AppDrawer');
+                }
+              });
+          });
+      } catch (e) {
+        setShowAlert(true);
+        setAlertMsg('User not found');
+        setIsLoading(false);
+      }
+    }
   };
 
   // danger.200 for light mode.
   return (
-    <Center w="100%">
+    <Center w="100%" bg={useColorModeValue('#fafaf9', 'black')} h="100%">
+      {showAlert && (
+        <AlertNotice
+          alertType="error"
+          message={alertMsg}
+          setShowAlert={setShowAlert}
+        />
+      )}
+
       <Box safeArea p="2" w="90%" maxW="290" py="8">
         <Heading
           size="lg"
@@ -119,7 +204,7 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
           _dark={{
             color: 'warmGray.50',
           }}
-          fontWeight="semibold">
+          fontWeight="bold">
           Welcome
         </Heading>
         <Heading
@@ -133,23 +218,69 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
           Login to continue!
         </Heading>
         <VStack space={3} mt="5">
-          <FormControl>
+          <FormControl isInvalid={!!errorMessages.email}>
             <FormControl.Label>Email</FormControl.Label>
-            <Input onChangeText={text => setEmail(text)} value={email} />
+            <Input
+              onChangeText={text => {
+                setEmail(text);
+                setErrorMessages({...errorMessages, email: null});
+                setShowAlert(false);
+              }}
+              value={email}
+            />
+            {errorMessages.email && (
+              <FormControl.ErrorMessage>
+                {errorMessages.email}
+              </FormControl.ErrorMessage>
+            )}
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!errorMessages.password}>
             <FormControl.Label>Password</FormControl.Label>
+            {/* <Input w={{
+      base: "75%",
+      md: "25%"
+    }} type={show ? "text" : "password"} InputRightElement={<Pressable onPress={() => setShow(!show)}>
+            <Icon as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
+          </Pressable>} placeholder="Password" /> */}
             <Input
               type="password"
-              onChangeText={text => setPassword(text)}
+              onChangeText={text => {
+                setPassword(text);
+                setErrorMessages({...errorMessages, password: null});
+                setShowAlert(false);
+              }}
               value={password}
             />
+            {errorMessages.password && (
+              <FormControl.ErrorMessage>
+                {errorMessages.password}
+              </FormControl.ErrorMessage>
+            )}
           </FormControl>
-
-          <Button mt="2" colorScheme="indigo" onPress={onLoginPress}>
+          <Checkbox
+            isChecked={stayLoggedIn}
+            colorScheme="info"
+            value={'stayLoggedIn'}
+            onChange={async isEnabled => {
+              setStayLoggedIn(isEnabled);
+              if (isEnabled) {
+                try {
+                  await AsyncStorage.setItem('stayLoggedIn', 'true');
+                } catch (e) {
+                  console.log('Error');
+                }
+              }
+            }}>
+            <Text fontSize="sm">Keep me signed in</Text>
+          </Checkbox>
+          <Button
+            mt="2"
+            colorScheme="indigo"
+            onPress={onLoginPress}
+            isLoading={isLoading}>
             Login
           </Button>
-          <HStack mt="6" justifyContent="center">
+          <HStack mt="1" justifyContent="center">
             <Text
               fontSize="sm"
               color="coolGray.600"
@@ -169,30 +300,31 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
               }}>
               Sign Up
             </Link>
-
-            <Checkbox
-              isChecked={stayLoggedIn}
-              colorScheme="info"
-              value={'stayLoggedIn'}
-              onChange={async isEnabled => {
-                setStayLoggedIn(isEnabled);
-                if (isEnabled) {
-                  try {
-                    await AsyncStorage.setItem('stayLoggedIn', 'true');
-                  } catch (e) {
-                    console.log('Error');
-                  }
-                }
-              }}>
-              Keep me signed in
-            </Checkbox>
           </HStack>
         </VStack>
-        <VStack>
-          <Text> Or use your fingerprint to login:</Text>
-
-          <Auth setAuthenticated={setAuthenticated} />
-        </VStack>
+        <Divider
+          my="6"
+          _light={{
+            bg: 'muted.800',
+          }}
+          _dark={{
+            bg: 'muted.50',
+          }}
+        />
+        {userContext?.user?.uid ? (
+          <VStack>
+            <Text marginBottom={2}>
+              You can also use your fingerprint to login:
+            </Text>
+            <FingerprintScan setAuthenticated={setAuthenticated} />
+          </VStack>
+        ) : (
+          <VStack>
+            <Text>
+              Fingerprint Authentication is not available on first time sign in.
+            </Text>
+          </VStack>
+        )}
       </Box>
     </Center>
   );
