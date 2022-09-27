@@ -2,7 +2,7 @@ import React, {FC, useContext, useEffect, useState} from 'react';
 
 // import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import isEmpty from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import AppDrawer from './AppDrawer';
 import Signup from '../screens/login/Signup';
 import Login from '../screens/login/Login';

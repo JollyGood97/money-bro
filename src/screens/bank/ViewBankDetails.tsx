@@ -57,7 +57,7 @@ const ViewBankDetails = () => {
             _dark={{
               borderColor: 'muted.50',
             }}
-            shadow={6}
+            shadow={8}
             rounded="lg"
             borderColor="indigo.900"
             bgColor={'indigo.100'}

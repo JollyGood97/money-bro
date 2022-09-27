@@ -30,7 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FingerprintScan from './components/FingerprintScan';
 import {Pressable, SafeAreaView, StyleSheet} from 'react-native';
 import User from '../../model/User';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import AlertNotice from '../../common/Alert';
 
 type LoginProps = NativeStackScreenProps<AppStackParamList, 'Login'>;

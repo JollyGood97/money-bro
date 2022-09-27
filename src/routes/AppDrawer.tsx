@@ -1,5 +1,7 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import Dashboard from '../screens/dashboard/Dashboard';
 import ViewSummary from '../screens/summary/ViewSummary';
 import Settings from '../screens/settings/Settings';
@@ -12,26 +14,86 @@ const Drawer = createDrawerNavigator();
 // drawer navigation options
 const AppDrawer = () => {
   return (
-    <Drawer.Navigator initialRouteName="Dashboard">
-      <Drawer.Screen name="Dashboard" component={Dashboard} />
+    <Drawer.Navigator
+      initialRouteName="Dashboard"
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: 'white',
+        },
+        drawerLabelStyle: {
+          fontSize: 18,
+        },
+        drawerInactiveTintColor: 'black',
+        drawerActiveTintColor: '#38bdf8',
+        drawerActiveBackgroundColor: '#000e21',
+      }}>
+      <Drawer.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="home"
+              size={size}
+              color={focused ? '#38bdf8' : '#3730a3'}
+            />
+          ),
+        }}
+      />
 
       <Drawer.Screen
         name="View Summary"
         component={ViewSummary}
-        //   options={{
-        //     drawerIcon: ({ focused, size }) => (
-        //         <Icon
-        //             name="home"
-        //             size={size}
-        //             color={focused ? 'red' : 'black'}
-        //         />
-        //     ),
-        // }}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="clipboard-text-multiple"
+              size={size}
+              color={focused ? '#38bdf8' : '#3730a3'}
+            />
+          ),
+        }}
       />
-      <Drawer.Screen name="Bank Details" component={ViewBankDetails} />
-      <Drawer.Screen name="Leaderboard" component={ViewLeaderBoard} />
+      <Drawer.Screen
+        name="Bank Details"
+        component={ViewBankDetails}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="bank"
+              size={size}
+              color={focused ? '#38bdf8' : '#3730a3'}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Leaderboard"
+        component={ViewLeaderBoard}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="medal"
+              size={size}
+              color={focused ? '#38bdf8' : '#3730a3'}
+            />
+          ),
+        }}
+      />
 
-      <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="cog"
+              size={size}
+              color={focused ? '#38bdf8' : '#3730a3'}
+            />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 };

@@ -58,13 +58,20 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
 
   return (
     <ScrollView>
-      <View padding={10}>
+      <View m={10}>
         <Center>
           <VStack>
-            <HStack space={5}>
-              <Text>Use Dark Mode</Text>
+            <HStack
+              space={10}
+              marginBottom={10}
+              bg="indigo.100"
+              rounded="lg"
+              p="5">
+              <Text bold fontSize={18}>
+                Use Dark Mode
+              </Text>
               <Switch
-                offTrackColor="indigo.100"
+                offTrackColor="indigo.900"
                 onTrackColor="indigo.200"
                 onThumbColor="indigo.500"
                 offThumbColor="indigo.50"
@@ -84,7 +91,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 }}>
                 Currency
               </Button> */}
-              <Text>Select Currency: </Text>
+              {/* <Text>Select Currency: </Text>
               <CurrencyPicker
                 currencyPickerRef={(ref: any) => {
                   currencyPickerRef = ref;
@@ -100,10 +107,40 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 }}
                 showNativeSymbol={false}
                 showSymbol={true}
-              />
+              /> */}
+            </HStack>
+            <HStack
+              space={10}
+              marginBottom={10}
+              bg="indigo.100"
+              rounded="lg"
+              p="5">
+              <Text bold fontSize={18}>
+                Change Username
+              </Text>
+            </HStack>
+            <HStack
+              space={10}
+              marginBottom={10}
+              bg="indigo.100"
+              rounded="lg"
+              p="5">
+              <Text bold fontSize={18}>
+                Change Currency
+              </Text>
+            </HStack>
+            <HStack
+              space={10}
+              marginBottom={10}
+              bg="indigo.100"
+              rounded="lg"
+              p="5">
+              <Text bold fontSize={18}>
+                Sign Out
+              </Text>
             </HStack>
             <Button
-              mt="2"
+              mt="10"
               colorScheme="indigo"
               onPress={async () => {
                 userContext?.setUser({} as User);

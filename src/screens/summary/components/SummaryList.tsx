@@ -12,10 +12,12 @@ import {
 import {EXPENSE, INCOME, month} from '../../../constants/Constants';
 import Transaction from '../../../model/Transaction';
 import isEmpty from 'lodash/isEmpty';
+import MonthlyData from '../../../model/MonthlyData';
 
 type SummaryListProps = {
-  data: Transaction[];
+  data: MonthlyData[];
   type: 'Income' | 'Expense';
+  getTotalPerMonth: Function;
 };
 
 const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
@@ -30,6 +32,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
     });
     return total;
   };
+
   return (
     <Box>
       <Center>
@@ -38,19 +41,19 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
         </Heading>
       </Center>
 
-      {month.map((monthInText, key: number) => {
-        const dataForMonth = data.filter(
-          monthlyData => monthlyData.month === key,
-        );
-        if (!isEmpty(dataForMonth)) {
+      {data.map((monthlyData, key: number) => {
+        // const dataForMonth = data.filter(
+        //   monthlyData => monthlyData.month === key,
+        // );
+        if (!isEmpty(monthlyData)) {
           return (
             <Box key={key}>
               <Heading marginTop={5} fontSize="lg" p="4" pb="3" key={key}>
-                {monthInText}
+                {monthlyData.month}
               </Heading>
 
               <FlatList
-                data={dataForMonth}
+                data={monthlyData.data}
                 renderItem={({item}) => (
                   <Box
                     bg={'white'}
@@ -121,7 +124,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                   color="indigo.900"
                   // alignSelf="flex-start"
                 >
-                  $ {getTotalPerMonth(dataForMonth)?.toString()}
+                  $ {getTotalPerMonth(monthlyData.data)?.toString()}
                 </Text>
               </HStack>
             </Box>

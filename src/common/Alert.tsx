@@ -24,7 +24,9 @@ const AlertNotice: FC<AlertProps> = (props: AlertProps) => {
       ? 'check-circle'
       : alertType === 'error'
       ? 'alert'
-      : 'exclamation-thick';
+      : alertType === 'warning'
+      ? 'exclamation-thick'
+      : 'info';
 
   const iconColor =
     alertType === 'success'
@@ -34,21 +36,22 @@ const AlertNotice: FC<AlertProps> = (props: AlertProps) => {
       : '#c2410c';
 
   return (
-    <Alert w="80%" status={alertType}>
+    <Alert w="100%" status={alertType}>
       <VStack space={2} flexShrink={1} w="100%">
         <HStack flexShrink={1} space={2} justifyContent="space-between">
-          <HStack space={2} flexShrink={1} paddingTop={1}>
+          <HStack space={2} flexShrink={1} paddingTop={1} paddingRight={2}>
             <Icon name={iconType} size={24} color={iconColor} />
-            <Text fontSize="md">{message}</Text>
+            <Text fontSize="12px" marginRight={2}>
+              {message}
+            </Text>
           </HStack>
           <IconButton
             onPress={() => setShowAlert(false)}
-            variant="unstyled"
             marginTop={-1}
             _focus={{
               borderWidth: 0,
             }}
-            icon={<Icon name="close" size={24} color="black" />}
+            icon={<Icon name="close" size={16} color="black" />}
           />
         </HStack>
       </VStack>

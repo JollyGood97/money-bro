@@ -2,13 +2,14 @@ import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import firestore from '@react-native-firebase/firestore';
 import Transaction from '../model/Transaction';
 import FixedDeposit from '../model/FixedDeposit';
+import Goal from '../model/Goal';
 
 const timestamp = firestore.FieldValue.serverTimestamp();
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['newIncomeExpense', 'newFixedDeposit'],
+  tagTypes: ['newIncomeExpense', 'newFixedDeposit', 'monthlyGoal'],
   endpoints: builder => ({
     getIncomeExpense: builder.query<Transaction[], any>({
       providesTags: ['newIncomeExpense'],
@@ -113,6 +114,46 @@ export const baseApi = createApi({
         }
       },
     }),
+    getMonthlyGoal: builder.query<Goal[], any>({
+      providesTags: ['monthlyGoal'],
+      async queryFn(arg) {
+        const {uid} = arg;
+        try {
+          const monthlyGoalData: any = [];
+          await firestore()
+            .collection('goals')
+            .where('uid', '==', uid)
+            // .orderBy('month', 'asc')
+            // .orderBy('createdAt', 'asc')
+            .get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(documentSnapshot => {
+                monthlyGoalData.push({
+                  id: documentSnapshot.id,
+                  ...documentSnapshot.data(),
+                });
+              });
+            });
+
+          return {data: monthlyGoalData};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
+    addMonthlyGoal: builder.mutation({
+      invalidatesTags: ['monthlyGoal'],
+      async queryFn(data) {
+        try {
+          await firestore()
+            .collection('goals')
+            .add({...data, createdAt: timestamp});
+          return {data};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
   }),
 });
 
@@ -122,4 +163,6 @@ export const {
   useAddIncomeExpenseMutation,
   useGetFixedDepositsQuery,
   useAddFixedDepositMutation,
+  useAddMonthlyGoalMutation,
+  useGetMonthlyGoalQuery,
 } = baseApi;
