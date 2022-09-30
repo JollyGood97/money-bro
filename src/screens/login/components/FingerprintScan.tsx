@@ -23,6 +23,7 @@ import FingerprintIcon from '../../../assets/fingerprint.svg';
 
 type FingerprintScanProps = {
   setAuthenticated: Function;
+  setIsAuthenticating: Function;
 };
 
 const FingerprintScan: FC<FingerprintScanProps> = (
@@ -30,7 +31,7 @@ const FingerprintScan: FC<FingerprintScanProps> = (
 ) => {
   const [newBiometryType, setBiometryType] = useState<string | null>(null);
 
-  const {setAuthenticated} = props;
+  const {setAuthenticated, setIsAuthenticating} = props;
 
   useEffect(() => {
     FingerprintScanner.isSensorAvailable()
@@ -45,10 +46,10 @@ const FingerprintScan: FC<FingerprintScanProps> = (
       FingerprintScanner.authenticate({
         description: 'Please scan',
       })
+
         .then(() => {
           setAuthenticated(true);
-          console.log('Logged in!');
-          //you can write your logic here to what will happen on successful authentication
+          setIsAuthenticating(true);
         })
         .catch(error => {
           console.log('Authentication error is => ', error);

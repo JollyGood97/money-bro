@@ -9,10 +9,19 @@ type ModalProps = {
   onSave: ((event: GestureResponderEvent) => void) | null;
   isLoading?: boolean;
   children: ReactNode;
+  disableSave?: boolean;
 };
 
 const CommonModal: FC<ModalProps> = (props: ModalProps) => {
-  const {children, heading, showModal, setShowModal, onSave, isLoading} = props;
+  const {
+    children,
+    heading,
+    showModal,
+    setShowModal,
+    onSave,
+    isLoading,
+    disableSave = false,
+  } = props;
 
   return (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -43,7 +52,8 @@ const CommonModal: FC<ModalProps> = (props: ModalProps) => {
               }}
               isLoading={isLoading}
               colorScheme="indigo"
-              onPress={onSave}>
+              onPress={onSave}
+              disabled={disableSave}>
               Save
             </Button>
           </Button.Group>

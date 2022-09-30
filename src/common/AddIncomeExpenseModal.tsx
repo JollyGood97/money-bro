@@ -6,6 +6,7 @@ import Modal from '../common/Modal';
 import NumericInput from './NumericInput';
 
 import {useAddIncomeExpenseMutation} from '../api/baseApi';
+import isEmpty from 'lodash/isEmpty';
 
 type AddIncomeExpenseModalProps = {
   type: 'Income' | 'Expense';
@@ -29,8 +30,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
     setShowAlert,
     setAlertMessage,
   } = props;
-  const [addIncomeExpense, {isLoading, isSuccess, isError}] =
-    useAddIncomeExpenseMutation();
+  const [addIncomeExpense, {isLoading}] = useAddIncomeExpenseMutation();
   const [description, setDescription] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   // const {toggleColorMode} = useColorMode();
@@ -46,10 +46,8 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
         message:
           'No Internet connection. Your added data will be synced when back online.',
       });
-      // set alert in parent to true setShowAlert(true); setAlert(type: 'warning', message: 'No Internet connection');
     }
     try {
-      console.log('inside try');
       await addIncomeExpense({
         type,
         description,
@@ -57,9 +55,19 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
         month: currentMonth,
         uid: userID,
       }).then(() => {
-        setShowModal(false);
+        setShowModal(true);
+        setAlertMessage({
+          alertType: 'success',
+          message: 'Successfully added.',
+        });
       });
-    } catch (error) {}
+    } catch (error) {
+      setShowModal(true);
+      setAlertMessage({
+        alertType: 'error',
+        message: 'Failed to add data.',
+      });
+    }
   };
 
   return (
@@ -68,6 +76,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
       setShowModal={setShowModal}
       heading={`Add ${type}`}
       onSave={onSave}
+      disableSave={isEmpty(description) && isEmpty(amount)}
       isLoading={isLoading}>
       <FormControl>
         <FormControl.Label>

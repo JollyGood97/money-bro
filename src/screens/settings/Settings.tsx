@@ -140,22 +140,15 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
               </Text>
             </HStack>
             <Button
-              mt="10"
               colorScheme="indigo"
               onPress={async () => {
                 userContext?.setUser({} as User);
-                // try {
-                //   await AsyncStorage.removeItem('uid');
-                // } catch (e) {
-                //   console.log('Error');
-                // }
                 try {
                   await AsyncStorage.setItem('stayLoggedIn', 'false');
                 } catch (e) {
                   console.log('Error');
                 }
                 navigation.navigate('Login');
-                // navigation.navigate('');
               }}>
               Sign Out
             </Button>

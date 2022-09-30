@@ -10,14 +10,10 @@ import Transaction from '../../model/Transaction';
 import MonthlyData from '../../model/MonthlyData';
 import isEmpty from 'lodash/isEmpty';
 
-// import {Icon} from 'native-base';
-
 const Tab = createMaterialTopTabNavigator();
 
-// drawer navigation options
 const ViewSummary = () => {
   const userContext = useContext(UserContext);
-
   const userID = userContext?.user?.uid || '';
 
   const {
@@ -89,19 +85,16 @@ const ViewSummary = () => {
     return total;
   };
 
-  // const monthlyIncomeData = getMonthlyData(incomeData);
-  // const monthlyExpenseData = getMonthlyData(expenseData);
-
-  // month.forEach((monthInText, key: number) => {
-  //   const dataForMonth = incomeData.filter(
-  //     monthlyData => monthlyData.month === key,
-  //   );
-  //   monthlyIncomeData = [...monthlyIncomeData, {month: monthInText, data: dataForMonth}]
-  // });
-  console.log('setOverallIncome', overallIncome);
-
   return (
     <Tab.Navigator tabBarPosition="bottom">
+      <Tab.Screen name="Overall Summary">
+        {() => (
+          <OverallSummary
+            overallIncome={overallIncome}
+            overallExpense={overallExpense}
+          />
+        )}
+      </Tab.Screen>
       <Tab.Screen name="Income Summary">
         {() => (
           <SummaryList
@@ -120,10 +113,6 @@ const ViewSummary = () => {
           />
         )}
       </Tab.Screen>
-
-      {/* <Tab.Screen name="Expenses Summary" component={ExpenseSummary} /> */}
-
-      <Tab.Screen name="Overall Summary" component={OverallSummary} />
     </Tab.Navigator>
   );
 };

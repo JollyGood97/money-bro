@@ -3,6 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import Transaction from '../model/Transaction';
 import FixedDeposit from '../model/FixedDeposit';
 import Goal from '../model/Goal';
+import User from '../model/User';
 
 const timestamp = firestore.FieldValue.serverTimestamp();
 
@@ -154,6 +155,28 @@ export const baseApi = createApi({
         }
       },
     }),
+    getAllUsers: builder.query<User[], any>({
+      async queryFn() {
+        try {
+          const usersData: any = [];
+          await firestore()
+            .collection('users')
+            .get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(documentSnapshot => {
+                usersData.push({
+                  id: documentSnapshot.id,
+                  ...documentSnapshot.data(),
+                });
+              });
+            });
+
+          return {data: usersData};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
   }),
 });
 
@@ -165,4 +188,5 @@ export const {
   useAddFixedDepositMutation,
   useAddMonthlyGoalMutation,
   useGetMonthlyGoalQuery,
+  useGetAllUsersQuery,
 } = baseApi;

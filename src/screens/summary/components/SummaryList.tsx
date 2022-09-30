@@ -42,9 +42,6 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
       </Center>
 
       {data.map((monthlyData, key: number) => {
-        // const dataForMonth = data.filter(
-        //   monthlyData => monthlyData.month === key,
-        // );
         if (!isEmpty(monthlyData)) {
           return (
             <Box key={key}>
@@ -57,7 +54,6 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                 renderItem={({item}) => (
                   <Box
                     bg={'white'}
-                    // borderBottomLeftRadius={5}
                     rounded="lg"
                     borderBottomWidth="1"
                     _dark={{
@@ -76,11 +72,6 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                         bold>
                         {item.description}
                       </Text>
-                      {/* <Text color="coolGray.600" _dark={{
-                color: "warmGray.200"
-              }}>
-                      {item.recentText}
-                    </Text> */}
 
                       <Spacer />
 
@@ -90,9 +81,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                           color: 'warmGray.50',
                         }}
                         bold
-                        color="indigo.900"
-                        // alignSelf="flex-start"
-                      >
+                        color="indigo.900">
                         $ {item.amount}
                       </Text>
                     </HStack>
@@ -121,9 +110,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                     color: 'warmGray.50',
                   }}
                   bold
-                  color="indigo.900"
-                  // alignSelf="flex-start"
-                >
+                  color="indigo.900">
                   $ {getTotalPerMonth(monthlyData.data)?.toString()}
                 </Text>
               </HStack>

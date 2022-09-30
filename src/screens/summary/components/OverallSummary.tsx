@@ -1,26 +1,74 @@
 import React, {FC} from 'react';
-import {Text, View} from 'react-native';
 
-type OverallSummaryProps = {};
+import {Box, Center, Text, VStack, HStack} from 'native-base';
+
+type PanelProps = {
+  heading: string;
+  amount: number;
+  color: string;
+};
+
+const Panel: FC<PanelProps> = (props: PanelProps) => {
+  const {heading, amount, color} = props;
+  return (
+    <Box
+      bg="white"
+      shadow={3}
+      rounded="lg"
+      borderWidth="2"
+      _dark={{
+        borderColor: 'muted.50',
+      }}
+      borderColor={color}
+      p={2}
+      marginLeft={5}
+      marginRight={5}>
+      <Center p={4}>
+        <HStack space={3} m={2}>
+          <Text fontSize={16} bold>
+            {heading}
+          </Text>
+        </HStack>
+
+        <Text color={color} bold fontSize={42}>
+          $ {amount}
+        </Text>
+      </Center>
+    </Box>
+  );
+};
+
+type OverallSummaryProps = {
+  overallIncome: number;
+  overallExpense: number;
+};
 
 const OverallSummary: FC<OverallSummaryProps> = (
   props: OverallSummaryProps,
 ) => {
-  const {} = props;
+  const {overallIncome, overallExpense} = props;
 
   return (
-    <View>
-      <Text>Overall Summary</Text>
-    </View>
+    <Box paddingTop={6}>
+      <VStack space={10}>
+        <Panel
+          heading=" Overall Income"
+          amount={overallIncome}
+          color="indigo.800"
+        />
+        <Panel
+          heading=" Overall Expense"
+          amount={overallExpense}
+          color="yellow.400"
+        />
+        <Panel
+          heading=" Total Savings"
+          amount={overallIncome - overallExpense}
+          color="info.400"
+        />
+      </VStack>
+    </Box>
   );
 };
 
 export default OverallSummary;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-// });

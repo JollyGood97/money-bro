@@ -54,6 +54,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
 
   const userContext = useContext(UserContext);
   const userID = userContext?.user?.uid || '';
+  const userCurrency = userContext?.user?.currency || '';
 
   const currentMonth = getCurrentMonth();
   const currentMonthInText = month[currentMonth];
@@ -182,7 +183,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
             rounded={10}
             shadow={3}>
             <Text fontSize={26} bold color="black">
-              $ {balance.toFixed(2)}
+              {userCurrency} {balance.toFixed(2)}
             </Text>
           </Box>
         </Center>
@@ -198,7 +199,7 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
                 shadow={3}
                 rounded={10}>
                 <Text fontSize={26} bold color="black">
-                  {parseInt(goal, 10).toFixed(2)} $
+                  {userCurrency} {parseInt(goal, 10).toFixed(2)}
                 </Text>
               </Box>
             </>

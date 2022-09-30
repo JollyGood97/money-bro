@@ -15,3 +15,9 @@ export const month = [
   'November',
   'December',
 ];
+
+export const MenuOptions = [
+  'Highest Savings',
+  'Highest Income',
+  'Highest Expense',
+];

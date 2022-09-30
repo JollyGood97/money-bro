@@ -23,9 +23,9 @@ const AppDrawer = () => {
         drawerLabelStyle: {
           fontSize: 18,
         },
-        drawerInactiveTintColor: 'black',
-        drawerActiveTintColor: '#38bdf8',
-        drawerActiveBackgroundColor: '#000e21',
+        drawerInactiveTintColor: '#3730a3',
+        drawerActiveTintColor: 'black',
+        drawerActiveBackgroundColor: '#c7d2fe',
       }}>
       <Drawer.Screen
         name="Dashboard"
@@ -35,7 +35,7 @@ const AppDrawer = () => {
             <Icon
               name="home"
               size={size}
-              color={focused ? '#38bdf8' : '#3730a3'}
+              color={focused ? 'black' : '#3730a3'}
             />
           ),
         }}
@@ -49,7 +49,7 @@ const AppDrawer = () => {
             <Icon
               name="clipboard-text-multiple"
               size={size}
-              color={focused ? '#38bdf8' : '#3730a3'}
+              color={focused ? 'black' : '#3730a3'}
             />
           ),
         }}
@@ -62,7 +62,7 @@ const AppDrawer = () => {
             <Icon
               name="bank"
               size={size}
-              color={focused ? '#38bdf8' : '#3730a3'}
+              color={focused ? 'black' : '#3730a3'}
             />
           ),
         }}
@@ -75,7 +75,7 @@ const AppDrawer = () => {
             <Icon
               name="medal"
               size={size}
-              color={focused ? '#38bdf8' : '#3730a3'}
+              color={focused ? 'black' : '#3730a3'}
             />
           ),
         }}
@@ -89,7 +89,7 @@ const AppDrawer = () => {
             <Icon
               name="cog"
               size={size}
-              color={focused ? '#38bdf8' : '#3730a3'}
+              color={focused ? 'black' : '#3730a3'}
             />
           ),
         }}

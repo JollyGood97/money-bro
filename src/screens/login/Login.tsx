@@ -17,6 +17,7 @@ import {
   useColorModeValue,
   CloseIcon,
   CheckIcon,
+  Spinner,
 } from 'native-base';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -45,35 +46,10 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
     password: null,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
   const userContext = useContext(UserContext);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMsg, setAlertMsg] = useState<string>('');
-
-  // const setUID = useCallback(async () => {
-  //   const cachedUID = await AsyncStorage.getItem('uid');
-  //   if (cachedUID) {
-  //     setCachedID(cachedUID);
-  //     //  console.log('isDarkModeEnabled', isDarkModeEnabled === 'true');
-  //     // userContext?.setUser({uid: cachedUID});
-  //   }
-  // }, []);
-
-  // const cachedUID = async () => {
-  //   return await AsyncStorage.getItem('uid');
-  // };
-
-  // useEffect(() => {
-  //   setUID();
-  // }, [setUID]);
-  // console.log('uid', userContext?.user?.uid);
-
-  // useEffect(() => {
-  //   setAuthenticated(authenticated);
-  // }, [authenticated]);
-
-  // useEffect(() => {
-  //   setUID();
-  // }, [authenticated, setUID, navigation]);
 
   useEffect(() => {
     console.log('authenticated', authenticated);
@@ -100,7 +76,8 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
         }
       });
     }
-    // have to figure out how to avoid passing user context as dependency
+    // practically user context will not change, can also use a ref instead
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authenticated, navigation]);
 
   const validateForm = () => {
@@ -163,7 +140,7 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
                     uid: existingUser.uid,
                     email: existingUser.email,
                     username: existingUser.username,
-                    currency: userContext?.user?.currency,
+                    currency: existingUser?.currency,
                   });
                   setIsLoading(false);
                   try {
@@ -311,12 +288,23 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
             bg: 'muted.50',
           }}
         />
-        {userContext?.user?.uid ? (
+
+        {isAuthenticating ? (
+          <HStack space={2} justifyContent="center">
+            <Spinner accessibilityLabel="Logging in" />
+            <Heading color="indigo.500" fontSize="md">
+              Loading
+            </Heading>
+          </HStack>
+        ) : userContext?.user?.uid ? (
           <VStack>
             <Text marginBottom={2}>
               You can also use your fingerprint to login:
             </Text>
-            <FingerprintScan setAuthenticated={setAuthenticated} />
+            <FingerprintScan
+              setAuthenticated={setAuthenticated}
+              setIsAuthenticating={setIsAuthenticating}
+            />
           </VStack>
         ) : (
           <VStack>

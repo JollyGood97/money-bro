@@ -137,7 +137,7 @@ const Signup: FC<SignupProps> = ({navigation}: SignupProps) => {
               _dark={{
                 color: 'warmGray.200',
               }}>
-              I'm an existing user.{' '}
+              I'm an existing user.
             </Text>
             <Link
               onPress={() => {
