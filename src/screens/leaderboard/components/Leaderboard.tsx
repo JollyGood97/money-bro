@@ -129,7 +129,7 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
       : 'yellow.200';
 
   return (
-    <View height="100%" bg={useColorModeValue('white', '#000e21')}>
+    <View height="100%" bg={useColorModeValue('#f5f5f4', '#000e21')}>
       {isLoadingUsers || isLoadingIEData ? (
         <VStack marginTop={20} space={10} alignItems="center">
           <Spinner color="indigo.500" size="lg" />

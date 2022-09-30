@@ -36,7 +36,7 @@ const ViewBankDetails = () => {
   const [showAddFDModal, setShowAddFDModal] = useState<boolean>(false);
 
   return (
-    <View height="100%" bg={useColorModeValue('white', '#000e21')}>
+    <View height="100%" bg={useColorModeValue('#f5f5f4', '#000e21')}>
       <Box marginTop={5}>
         <HStack marginRight={4}>
           <Heading marginLeft={4}> Fixed Deposits</Heading>

@@ -160,8 +160,9 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
   };
 
   // danger.200 for light mode.
+
   return (
-    <Center w="100%" bg={useColorModeValue('#fafaf9', 'black')} h="100%">
+    <Center w="100%" bg={useColorModeValue('#f5f5f4', 'black')} h="100%">
       {showAlert && (
         <AlertNotice
           alertType="error"

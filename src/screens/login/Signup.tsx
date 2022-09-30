@@ -11,6 +11,7 @@ import {
   VStack,
   HStack,
   Link,
+  useColorModeValue,
 } from 'native-base';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
@@ -82,7 +83,7 @@ const Signup: FC<SignupProps> = ({navigation}: SignupProps) => {
 
   // danger.200 for light mode.
   return (
-    <Center w="100%">
+    <Center w="100%" bg={useColorModeValue('#f5f5f4', 'black')} h="100%">
       <Box safeArea p="2" w="90%" maxW="290" py="8">
         <Heading
           size="lg"

@@ -48,7 +48,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
 
   return (
     <ScrollView>
-      <View height="100%" bg={useColorModeValue('white', '#000e21')} p={8}>
+      <View height="100%" bg={useColorModeValue('#f5f5f4', '#000e21')} p={8}>
         <Center>
           {showAlert && (
             <AlertNotice
