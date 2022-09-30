@@ -3,6 +3,7 @@ type User = {
   email?: string;
   username?: string;
   currency?: string;
+  leaderboardEnabled?: boolean;
 };
 
 export default User;

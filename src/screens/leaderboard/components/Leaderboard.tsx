@@ -5,11 +5,11 @@ import {
   FlatList,
   Heading,
   HStack,
-  VStack,
   Spacer,
-  Center,
   Menu,
   Button,
+  VStack,
+  Spinner,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -24,7 +24,6 @@ import {
   MenuOptions,
   month,
 } from '../../../constants/Constants';
-import Transaction from '../../../model/Transaction';
 import isEmpty from 'lodash/isEmpty';
 import orderBy from 'lodash/orderBy';
 
@@ -36,9 +35,8 @@ type LeaderboardProps = {
 };
 const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
   const {type} = props;
-  // const data: Transaction[] = props.route.params.data || [];
-  const userContext = useContext(UserContext);
 
+  const userContext = useContext(UserContext);
   const userID = userContext?.user?.uid || '';
 
   const {isLoading: isLoadingUsers, data: allUsers = []} =
@@ -47,33 +45,38 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
   const {isLoading: isLoadingIEData, data: allUsersIEData = []} =
     useGetAllUsersIncomeExpenseQuery('');
 
-  console.log('users', allUsers);
   const [selectedOption, setSelectedOption] = useState<string>(MenuOptions[0]);
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardData[]>([]);
 
   const setData = useCallback(() => {
-    const allUserScores = allUsers.map(user => {
-      let userIEData = allUsersIEData.filter(data => data.uid === user.uid);
-      if (type === 'Monthly') {
-        userIEData = userIEData.filter(
-          data => data.month === getCurrentMonth(),
+    const allUserScores = allUsers
+      .filter(user => user.leaderboardEnabled)
+      .map(user => {
+        let userIEData = allUsersIEData.filter(data => data.uid === user.uid);
+        if (type === 'Monthly') {
+          userIEData = userIEData.filter(
+            data => data.month === getCurrentMonth(),
+          );
+        }
+        const userIncomeData = userIEData.filter(data => data.type === INCOME);
+        const userExpenseData = userIEData.filter(
+          data => data.type === EXPENSE,
         );
-      }
-      const userIncomeData = userIEData.filter(data => data.type === INCOME);
-      const userExpenseData = userIEData.filter(data => data.type === EXPENSE);
 
-      const totalIncome = getTotal(userIncomeData);
-      const totalExpense = getTotal(userExpenseData);
-      const totalSavings = totalIncome - totalExpense;
+        const totalIncome = getTotal(userIncomeData);
+        const totalExpense = getTotal(userExpenseData);
+        const total = totalIncome + totalExpense;
 
-      return {
-        uid: user.uid,
-        username: user.username || '',
-        totalIncome: totalIncome,
-        totalExpense: totalExpense,
-        totalSavings: totalSavings,
-      };
-    });
+        const totalSavings = totalIncome - totalExpense;
+
+        return {
+          uid: user.uid,
+          username: user.username || '',
+          totalIncome: (totalIncome / total) * 100 || 0,
+          totalExpense: (totalExpense / total) * 100 || 0,
+          totalSavings: (totalSavings / total) * 100 || 0,
+        };
+      });
     setLeaderboardData(orderBy(allUserScores, ['totalSavings'], ['desc']));
   }, [allUsers, allUsersIEData, type]);
 
@@ -109,9 +112,7 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
       return item.totalExpense;
     }
   };
-  console.log('leaderboardData', leaderboardData);
 
-  // insert down icon
   const colorMain =
     selectedOption === MenuOptions[0]
       ? 'blue.600'
@@ -124,137 +125,88 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
       : selectedOption === MenuOptions[1]
       ? 'indigo.200'
       : 'yellow.200';
+
   return (
-    <Box p={6}>
-      <HStack space={5} marginBottom={6} marginLeft={-2}>
-        <Heading fontSize="xl" p="4" pb="3">
-          {selectedOption}
-        </Heading>
-        <Menu
-          w="160"
-          trigger={triggerProps => {
-            return (
-              <Button colorScheme="indigo" {...triggerProps}>
+    <>
+      {isLoadingUsers || isLoadingIEData ? (
+        <VStack marginTop={20} space={10} alignItems="center">
+          <Spinner color="indigo.500" size="lg" />
+          <Text>Please wait, loading data ...</Text>
+        </VStack>
+      ) : (
+        <Box p={6}>
+          <HStack space={5} marginBottom={6} marginLeft={-2}>
+            <VStack marginTop={-2}>
+              <Heading fontSize="xl" p="4" pb="3">
+                {selectedOption}
+              </Heading>
+              {type === 'Monthly' && (
+                <Text bold fontSize="md" marginLeft={4}>
+                  {month[getCurrentMonth()]}
+                </Text>
+              )}
+            </VStack>
+            <VStack>
+              <Menu
+                w="160"
+                trigger={triggerProps => {
+                  return (
+                    <Button colorScheme="indigo" {...triggerProps}>
+                      <HStack space={4}>
+                        <Text color="white" bold>
+                          Category
+                        </Text>
+                        <Box marginTop={1}>
+                          <Icon
+                            name="arrow-down-drop-circle"
+                            size={16}
+                            color="white"
+                          />
+                        </Box>
+                      </HStack>
+                    </Button>
+                  );
+                }}>
+                {MenuOptions.map((item, key) => (
+                  <Menu.Item key={key} onPress={() => onMenuItemSelect(item)}>
+                    {item}
+                  </Menu.Item>
+                ))}
+              </Menu>
+            </VStack>
+          </HStack>
+
+          <FlatList
+            data={leaderboardData}
+            renderItem={({item, index}) => (
+              <Box
+                width={'100%'}
+                bg={userID === item.uid ? 'primary.100' : colorBg}
+                rounded="lg"
+                borderWidth={2}
+                borderColor={colorMain}
+                p={3}>
                 <HStack space={4}>
-                  <Text color="white" bold>
-                    Category
+                  <Text color="black" bold>
+                    # {index + 1}
                   </Text>
-                  <Box marginTop={1}>
-                    <Icon
-                      name="arrow-down-drop-circle"
-                      size={16}
-                      color="white"
-                    />
-                  </Box>
+                  <Text color="black" bold>
+                    {item.username}
+                    {/* {userID === item.uid ? item.username : 'Anonymous user'} */}
+                  </Text>
+                  <Spacer />
+                  <Text fontSize="16px" bold color="black">
+                    {getResult(item)?.toFixed(2)} %
+                  </Text>
                 </HStack>
-              </Button>
-            );
-          }}>
-          {MenuOptions.map((item, key) => (
-            <Menu.Item key={key} onPress={() => onMenuItemSelect(item)}>
-              {item}
-            </Menu.Item>
-          ))}
-        </Menu>
-      </HStack>
-      <FlatList
-        data={leaderboardData}
-        renderItem={({item, index}) => (
-          <Box
-            width={'100%'}
-            bg={colorBg}
-            rounded="lg"
-            borderWidth={2}
-            borderColor={colorMain}
-            p={3}>
-            <HStack space={4}>
-              <Text color="black" bold>
-                # {index + 1}
-              </Text>
-              <Text color="black" bold>
-                {item.username}
-              </Text>
-              <Spacer />
-              <Text fontSize="16px" bold color="black">
-                $ {getResult(item)}
-              </Text>
-            </HStack>
-          </Box>
-        )}
-        keyExtractor={item => item.uid}
-      />
-    </Box>
+              </Box>
+            )}
+            keyExtractor={item => item.uid}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 
 export default Leaderboard;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-// });
-
-// {month.map((monthInText, key: number) => {
-//     const dataForMonth = data.filter(
-//       monthlyData => monthlyData.month === key,
-//     );
-//     if (!isEmpty(dataForMonth)) {
-//       return (
-//         <Box key={key}>
-//           <Heading fontSize="lg" p="4" pb="3">
-//             {monthInText}
-//           </Heading>
-
-//           <FlatList
-//             data={dataForMonth}
-//             renderItem={({item}) => (
-//               <Box
-//                 borderBottomWidth="1"
-//                 _dark={{
-//                   borderColor: 'muted.50',
-//                 }}
-//                 borderColor="muted.800"
-//                 m={5}
-//                 pl={['0', '4']}
-//                 pr={['0', '5']}
-//                 py="2">
-//                 <HStack>
-//                   <Text
-//                     _dark={{
-//                       color: 'warmGray.50',
-//                     }}
-//                     color="coolGray.800"
-//                     bold>
-//                     {item.description}
-//                   </Text>
-//                   {/* <Text color="coolGray.600" _dark={{
-//             color: "warmGray.200"
-//           }}>
-//                   {item.recentText}
-//                 </Text> */}
-
-//                   <Spacer />
-//                   <Text
-//                     fontSize="14px"
-//                     _dark={{
-//                       color: 'warmGray.50',
-//                     }}
-//                     color="coolGray.800"
-//                     // alignSelf="flex-start"
-//                   >
-//                     $ {item.amount}
-//                   </Text>
-//                 </HStack>
-//               </Box>
-//             )}
-//             keyExtractor={item => item.id}
-//           />
-//         </Box>
-//       );
-//     } else {
-//       return <></>;
-//     }
-//   })}

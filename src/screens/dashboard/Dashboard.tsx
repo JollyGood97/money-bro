@@ -27,16 +27,13 @@ import {
 } from '../../api/baseApi';
 import {getCurrentMonth} from '../../utils/CommonUtils';
 import AlertNotice from '../../common/Alert';
+import AlertMsg from '../../model/AlertMsg';
 
 // move to const file
 const widthAndHeight = 250;
 // const series = [50, 50]; // need to calculate
 const sliceColor = ['#facc15', '#4f46e5'];
 
-type AlertMsg = {
-  message: string;
-  alertType: 'error' | 'success' | 'warning' | 'info';
-};
 type DashboardProps = {};
 
 const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {

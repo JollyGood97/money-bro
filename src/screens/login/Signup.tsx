@@ -46,6 +46,7 @@ const Signup: FC<SignupProps> = ({navigation}: SignupProps) => {
           email,
           username,
           currency: '$',
+          leaderboardEnabled: false,
         };
 
         try {

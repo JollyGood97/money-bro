@@ -177,6 +177,45 @@ export const baseApi = createApi({
         }
       },
     }),
+    enableLeaderboard: builder.mutation({
+      async queryFn(data) {
+        try {
+          await firestore()
+            .collection('users')
+            .doc(data.uid)
+            .update({leaderboardEnabled: data.leaderboardEnabled});
+          return {data};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
+    changeCurrency: builder.mutation({
+      async queryFn(data) {
+        try {
+          await firestore()
+            .collection('users')
+            .doc(data.uid)
+            .update({currency: data.currency});
+          return {data};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
+    changeUsername: builder.mutation({
+      async queryFn(data) {
+        try {
+          await firestore()
+            .collection('users')
+            .doc(data.uid)
+            .update({username: data.changeUsername});
+          return {data};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
   }),
 });
 
@@ -189,4 +228,7 @@ export const {
   useAddMonthlyGoalMutation,
   useGetMonthlyGoalQuery,
   useGetAllUsersQuery,
+  useEnableLeaderboardMutation,
+  useChangeUsernameMutation,
+  useChangeCurrencyMutation,
 } = baseApi;

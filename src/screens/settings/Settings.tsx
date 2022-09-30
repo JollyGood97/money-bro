@@ -9,6 +9,8 @@ import {
   useColorMode,
   VStack,
   useColorModeValue,
+  Pressable,
+  Spacer,
 } from 'native-base';
 
 import {ScrollView} from 'react-native-gesture-handler';
@@ -18,19 +20,31 @@ import {UserContext} from './../../context/UserContext';
 import User from '../../model/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import {useEnableLeaderboardMutation} from '../../api/baseApi';
+import ChangeCurrencyModal from './components/ChangeCurrencyModal';
+import AlertNotice from '../../common/Alert';
+import AlertMsg from '../../model/AlertMsg';
 
 type SettingsProps = {};
 
 const Settings: FC<SettingsProps> = (props: SettingsProps) => {
   const {} = props;
 
+  const userContext = useContext(UserContext);
+  const [enableLeaderboard, {isLoading}] = useEnableLeaderboardMutation();
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<AlertMsg>({} as AlertMsg);
+
   const {toggleColorMode} = useColorMode();
   const [isDarkMode, setIsDarkMode] = useState<boolean>(
     useColorModeValue('Light', 'Dark'),
   );
-  let currencyPickerRef: any;
-  const userContext = useContext(UserContext);
-
+  const [leaderboardEnabled, setLeaderboardEnabled] = useState<boolean>(
+    userContext?.user?.leaderboardEnabled || false,
+  );
+  const [showChangeCurrencyModal, setShowChangeCurrencyModal] =
+    useState<boolean>(false);
+  console.log('leaderboardEnabled', leaderboardEnabled);
   // Add sign out and select currency option & stay logged in options
 
   // useEffect(() => {
@@ -58,18 +72,29 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
 
   return (
     <ScrollView>
-      <View m={10}>
+      <View m={8}>
         <Center>
-          <VStack>
+          {showAlert && (
+            <AlertNotice
+              alertType={alertMessage.alertType}
+              message={alertMessage.message}
+              setShowAlert={setShowAlert}
+            />
+          )}
+        </Center>
+        <Center>
+          <VStack space={5}>
             <HStack
-              space={10}
-              marginBottom={10}
               bg="indigo.100"
               rounded="lg"
-              p="5">
+              paddingLeft={5}
+              paddingTop={5}
+              paddingRight={3}
+              paddingBottom={5}>
               <Text bold fontSize={18}>
                 Use Dark Mode
               </Text>
+              <Spacer />
               <Switch
                 offTrackColor="indigo.900"
                 onTrackColor="indigo.200"
@@ -79,68 +104,45 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                   toggleColorMode();
                   setIsDarkMode(!isDarkMode);
                 }}
-                isChecked={isDarkMode}
+                isChecked={!isDarkMode}
               />
             </HStack>
-            <HStack>
-              {/* <Button
-                mt="2"
-                colorScheme="indigo"
-                onPress={() => {
-                  currencyPickerRef?.open();
-                }}>
-                Currency
-              </Button> */}
-              {/* <Text>Select Currency: </Text>
-              <CurrencyPicker
-                currencyPickerRef={(ref: any) => {
-                  currencyPickerRef = ref;
-                }}
-                enable={true}
-                darkMode={false}
-                currencyCode={'EUR'}
-                showFlag={true}
-                showCurrencyName={true}
-                showCurrencyCode={true}
-                onSelectCurrency={(data: any) => {
-                  console.log('currency', data);
-                }}
-                showNativeSymbol={false}
-                showSymbol={true}
-              /> */}
-            </HStack>
-            <HStack
-              space={10}
-              marginBottom={10}
-              bg="indigo.100"
-              rounded="lg"
-              p="5">
+            <HStack space={10} bg="indigo.100" rounded="lg" p="5">
               <Text bold fontSize={18}>
                 Change Username
               </Text>
             </HStack>
-            <HStack
-              space={10}
-              marginBottom={10}
-              bg="indigo.100"
-              rounded="lg"
-              p="5">
+            <Pressable
+              onPress={() => {
+                setShowChangeCurrencyModal(true);
+              }}>
+              <HStack space={10} bg="indigo.100" rounded="lg" p="5">
+                <Text bold fontSize={18}>
+                  Change Currency
+                </Text>
+              </HStack>
+            </Pressable>
+
+            <HStack space={10} bg="indigo.100" rounded="lg" p="5">
               <Text bold fontSize={18}>
-                Change Currency
+                Enable Leaderboard*
               </Text>
+              <Switch
+                offTrackColor="indigo.900"
+                onTrackColor="indigo.200"
+                onThumbColor="indigo.500"
+                offThumbColor="indigo.50"
+                onToggle={() => {
+                  setLeaderboardEnabled(!leaderboardEnabled);
+                  enableLeaderboard({
+                    uid: userContext?.user?.uid,
+                    leaderboardEnabled: !leaderboardEnabled,
+                  });
+                }}
+                isChecked={leaderboardEnabled}
+              />
             </HStack>
-            <HStack
-              space={10}
-              marginBottom={10}
-              bg="indigo.100"
-              rounded="lg"
-              p="5">
-              <Text bold fontSize={18}>
-                Sign Out
-              </Text>
-            </HStack>
-            <Button
-              colorScheme="indigo"
+            <Pressable
               onPress={async () => {
                 userContext?.setUser({} as User);
                 try {
@@ -150,11 +152,30 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 }
                 navigation.navigate('Login');
               }}>
-              Sign Out
-            </Button>
+              <HStack space={10} bg="indigo.100" rounded="lg" p="5">
+                <Text bold fontSize={18}>
+                  Sign Out
+                </Text>
+              </HStack>
+            </Pressable>
           </VStack>
+          <Text marginTop={5}>
+            *Please note that if you enable this, your data will be used to
+            determine your rank in the leaderboard. However, other users will
+            not see your actual data on the leaderboard, only will see
+            percentage wise. The change will be made on the restart of the
+            application.
+          </Text>
         </Center>
       </View>
+      <ChangeCurrencyModal
+        showModal={showChangeCurrencyModal}
+        setShowModal={setShowChangeCurrencyModal}
+        userID={userContext?.user?.uid || ''}
+        currentCurrency={userContext?.user?.currency || ''}
+        setShowAlert={setShowAlert}
+        setAlertMessage={setAlertMessage}
+      />
     </ScrollView>
   );
 };

@@ -141,6 +141,7 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
                     email: existingUser.email,
                     username: existingUser.username,
                     currency: existingUser?.currency,
+                    leaderboardEnabled: existingUser.leaderboard,
                   });
                   setIsLoading(false);
                   try {
