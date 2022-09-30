@@ -3,7 +3,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 
 import SummaryList from './components/SummaryList';
 import OverallSummary from './components/OverallSummary';
-import {useGetIncomeExpenseQuery} from '../../api/baseApi';
+import {useGetIncomeExpenseQuery} from '../../api/BaseApi';
 import {UserContext} from '../../context/UserContext';
 import {EXPENSE, INCOME, month} from '../../constants/Constants';
 import Transaction from '../../model/Transaction';

@@ -1,174 +1,144 @@
 import React, {useContext, useState} from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+//@ts-ignore
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {useGetFixedDepositsQuery} from '../../api/baseApi';
+import {useGetFixedDepositsQuery} from '../../api/BaseApi';
 import {UserContext} from '../../context/UserContext';
-import {EXPENSE, INCOME} from '../../constants/Constants';
 import {
   Box,
   Button,
-  Center,
   FlatList,
   Heading,
   HStack,
   Spacer,
   Text,
+  useColorModeValue,
+  View,
   VStack,
 } from 'native-base';
 import AddFDModal from './components/AddFDModal';
+
 import {getFormattedDate} from '../../utils/CommonUtils';
 
-// import {Icon} from 'native-base';
-
-// const Tab = createMaterialTopTabNavigator();
-
-// drawer navigation options
 const ViewBankDetails = () => {
   const userContext = useContext(UserContext);
 
   const userID = userContext?.user?.uid || '';
 
   const {
-    isSuccess,
-    isLoading,
-    isError,
-    error,
+    // isSuccess,
+    // isLoading,
+    // isError,
+    // error,
     data = [],
   } = useGetFixedDepositsQuery({uid: userID});
 
   const [showAddFDModal, setShowAddFDModal] = useState<boolean>(false);
 
   return (
-    <Box>
-      <Center>
-        <Heading> Fixed Deposits</Heading>
-      </Center>
-      <Button
-        onPress={() => {
-          setShowAddFDModal(true);
-        }}>
-        Add Fixed Deposit
-      </Button>
-      <FlatList
-        data={data}
-        renderItem={({item}) => (
-          <Box
-            borderWidth="3"
-            _dark={{
-              borderColor: 'muted.50',
-            }}
-            shadow={8}
-            rounded="lg"
-            borderColor="indigo.900"
-            bgColor={'indigo.100'}
-            m={5}
-            pl={['0', '4']}
-            pr={['0', '5']}
-            py="2">
-            <Heading fontSize="md" p="4" pb="3" color="blue.900">
-              {item.bank}
-            </Heading>
-            <VStack p={4} marginTop={-2}>
-              <HStack>
-                <Text
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
-                  color="coolGray.800"
-                  bold>
-                  Date of Deposit
-                </Text>
+    <View height="100%" bg={useColorModeValue('white', '#000e21')}>
+      <Box marginTop={5}>
+        <HStack marginRight={4}>
+          <Heading marginLeft={4}> Fixed Deposits</Heading>
+          <Spacer />
+          <Button
+            onPress={() => {
+              setShowAddFDModal(true);
+            }}>
+            <HStack>
+              <Icon name="plus-circle-outline" size={20} color="white" />
+              <Text color="white" bold>
+                {' '}
+                Add
+              </Text>
+            </HStack>
+          </Button>
+        </HStack>
 
-                <Spacer />
-                <Text
-                  fontSize="16px"
-                  color="indigo.800"
-                  bold
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}>
-                  {getFormattedDate(item?.startDate?.toDate() || new Date())}
-                </Text>
-              </HStack>
-              <HStack>
-                <Text
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
-                  color="coolGray.800"
-                  bold>
-                  Capital Amount
-                </Text>
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
+            <Box
+              borderWidth="3"
+              _dark={{
+                borderColor: 'muted.50',
+              }}
+              shadow={8}
+              rounded="lg"
+              borderColor="indigo.900"
+              bgColor={'indigo.100'}
+              m={5}
+              pl={['0', '4']}
+              pr={['0', '5']}
+              py="2">
+              <Heading fontSize="md" p="4" pb="3" color="blue.900">
+                {item.bank}
+              </Heading>
+              <VStack p={4} marginTop={-2}>
+                <HStack>
+                  <Text color="coolGray.800" bold>
+                    Date of Deposit
+                  </Text>
 
-                <Spacer />
-                <Text
-                  fontSize="16px"
-                  color="indigo.800"
-                  bold
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
+                  <Spacer />
+                  <Text fontSize="16px" color="indigo.800" bold>
+                    {getFormattedDate(item?.startDate?.toDate() || new Date())}
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Text color="coolGray.800" bold>
+                    Capital Amount
+                  </Text>
 
-                  // alignSelf="flex-start"
-                >
-                  $ {item.deposit}
-                </Text>
-              </HStack>
+                  <Spacer />
+                  <Text fontSize="16px" color="indigo.800" bold>
+                    $ {item.deposit}
+                  </Text>
+                </HStack>
 
-              <HStack>
-                <Text
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
-                  color="coolGray.800"
-                  bold>
-                  Interest Rate
-                </Text>
+                <HStack>
+                  <Text color="coolGray.800" bold>
+                    Interest Rate
+                  </Text>
 
-                <Spacer />
-                <Text
-                  fontSize="16px"
-                  color="indigo.800"
-                  bold
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}>
-                  {item.rate} %
-                </Text>
-              </HStack>
-              <HStack>
-                <Text
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
-                  color="coolGray.800"
-                  bold>
-                  Payment Mode
-                </Text>
+                  <Spacer />
+                  <Text fontSize="16px" color="indigo.800" bold>
+                    {item.rate} %
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Text color="coolGray.800" bold>
+                    Payment Mode
+                  </Text>
 
-                <Spacer />
-                <Text
-                  fontSize="16px"
-                  color="indigo.800"
-                  bold
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}>
-                  {item.paymentMode}
-                </Text>
-              </HStack>
-            </VStack>
-          </Box>
-        )}
-        keyExtractor={item => item.id}
-      />
+                  <Spacer />
+                  <Text fontSize="16px" color="indigo.800" bold>
+                    {item.paymentMode}
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Text color="coolGray.800" bold>
+                    Deposit Period
+                  </Text>
 
-      <AddFDModal
-        showModal={showAddFDModal}
-        setShowModal={setShowAddFDModal}
-        userID={userID}
-      />
-    </Box>
+                  <Spacer />
+                  <Text fontSize="16px" color="indigo.800" bold>
+                    {item.period}
+                  </Text>
+                </HStack>
+              </VStack>
+            </Box>
+          )}
+          keyExtractor={item => item.id}
+        />
+
+        <AddFDModal
+          showModal={showAddFDModal}
+          setShowModal={setShowAddFDModal}
+          userID={userID}
+        />
+      </Box>
+    </View>
   );
 };
 export default ViewBankDetails;

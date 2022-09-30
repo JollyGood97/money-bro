@@ -25,7 +25,7 @@ const CommonModal: FC<ModalProps> = (props: ModalProps) => {
 
   return (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-      <Modal.Content maxWidth="400px">
+      <Modal.Content width={'90%'}>
         <Modal.CloseButton />
         <Modal.Body>
           <Heading m={2}>{heading}</Heading>

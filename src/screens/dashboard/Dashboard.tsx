@@ -14,6 +14,7 @@ import {
   Pressable,
 } from 'native-base';
 import isEmpty from 'lodash/isEmpty';
+//@ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AddIncomeExpenseModal from '../../common/AddIncomeExpenseModal';
@@ -24,10 +25,11 @@ import {UserContext} from '../../context/UserContext';
 import {
   useGetIncomeExpenseQuery,
   useGetMonthlyGoalQuery,
-} from '../../api/baseApi';
+} from '../../api/BaseApi';
 import {getCurrentMonth} from '../../utils/CommonUtils';
 import AlertNotice from '../../common/Alert';
 import AlertMsg from '../../model/AlertMsg';
+import NoDataMessage from '../../common/NoDataMessage';
 
 // move to const file
 const widthAndHeight = 250;
@@ -56,23 +58,9 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
   const currentMonth = getCurrentMonth();
   const currentMonthInText = month[currentMonth];
 
-  const {
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-    data = [],
-  } = useGetIncomeExpenseQuery({uid: userID});
+  const {data = []} = useGetIncomeExpenseQuery({uid: userID});
 
-  const {
-    // isSuccess,
-    // isLoading,
-    // isError,
-    // error,
-    data: goalData = [],
-  } = useGetMonthlyGoalQuery({uid: userID});
-
-  // console.log('data', data);
+  const {data: goalData = []} = useGetMonthlyGoalQuery({uid: userID});
 
   const calculateData = useCallback(() => {
     let totalIncome = 0;
@@ -93,11 +81,8 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
 
       const incomePercentage = (totalIncome / total) * 100 || 0;
       const expensePercentage = (totalExpense / total) * 100 || 0;
-      // if (!isNaN(expensePercentage) && !isNaN(incomePercentage)) {
 
-      // }
       setSeries([expensePercentage, incomePercentage]);
-      // console.log(expensePercentage, incomePercentage);
       setBalance(totalIncome - totalExpense);
     }
   }, [currentMonth, data]);
@@ -133,26 +118,36 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
       </Center>
       <Center padding={6}>
         <Heading marginBottom={4}>{currentMonthInText}</Heading>
-        <PieChart
-          widthAndHeight={widthAndHeight}
-          series={series}
-          sliceColor={sliceColor}
-          doughnut
-          coverRadius={0.45}
-          coverFill={colorMode === 'light' ? '#e0e7ff' : '#000e21'}
-        />
+        {isEmpty(data) ? (
+          <NoDataMessage
+            description={
+              'Please start adding income or expense data to see a chart here.'
+            }
+          />
+        ) : (
+          <>
+            <PieChart
+              widthAndHeight={widthAndHeight}
+              series={series}
+              sliceColor={sliceColor}
+              doughnut
+              coverRadius={0.45}
+              coverFill={colorMode === 'light' ? '#e0e7ff' : '#000e21'}
+            />
+            <HStack m={5}>
+              <HStack space={2} marginRight={5}>
+                <View style={styles.circleGreen} />
+                <Text bold>Income - {series[1].toFixed(2).toString()}%</Text>
+              </HStack>
 
-        <HStack m={5}>
-          <HStack space={2} marginRight={5}>
-            <View style={styles.circleGreen} />
-            <Text bold>Income - {series[1].toFixed(2).toString()}%</Text>
-          </HStack>
+              <HStack space={2}>
+                <View style={styles.circleRed} />
+                <Text bold>Expense - {series[0].toFixed(2).toString()}%</Text>
+              </HStack>
+            </HStack>
+          </>
+        )}
 
-          <HStack space={2}>
-            <View style={styles.circleRed} />
-            <Text bold>Expense - {series[0].toFixed(2).toString()}%</Text>
-          </HStack>
-        </HStack>
         <HStack>
           <Button
             marginRight={10}

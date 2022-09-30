@@ -5,11 +5,10 @@ import {
   FlatList,
   Heading,
   HStack,
-  VStack,
   Spacer,
   Center,
 } from 'native-base';
-import {EXPENSE, INCOME, month} from '../../../constants/Constants';
+import {INCOME} from '../../../constants/Constants';
 import Transaction from '../../../model/Transaction';
 import isEmpty from 'lodash/isEmpty';
 import MonthlyData from '../../../model/MonthlyData';
@@ -21,7 +20,6 @@ type SummaryListProps = {
 };
 
 const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
-  // const data: Transaction[] = props.route.params.data || [];
   const {data, type} = props;
 
   const getTotalPerMonth = (dataForMonth: Transaction[]): number => {

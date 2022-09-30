@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useState, useCallback} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 
 import {
   Button,
@@ -12,11 +12,8 @@ import {
   HStack,
   Link,
   Checkbox,
-  View,
   Divider,
   useColorModeValue,
-  CloseIcon,
-  CheckIcon,
   Spinner,
 } from 'native-base';
 
@@ -25,11 +22,9 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import AppStackParamList from '../../model/AppStackParamList';
-// import {INCOME, EXPENSE} from '../../common/constants/Constants';
 import {UserContext} from './../../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FingerprintScan from './components/FingerprintScan';
-import {Pressable, SafeAreaView, StyleSheet} from 'react-native';
 import User from '../../model/User';
 import isEmpty from 'lodash/isEmpty';
 import AlertNotice from '../../common/Alert';
@@ -320,39 +315,3 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
 };
 
 export default Login;
-
-// const styles = StyleSheet.create({
-//   circleRed: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 20 / 2,
-//     backgroundColor: '#e11d48',
-//   },
-//   circleGreen: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 20 / 2,
-//     backgroundColor: '#16a34a',
-//   },
-// });
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    padding: 10,
-    justifyContent: 'center',
-  },
-  titleStyle: {
-    padding: 10,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  paragraphStyle: {
-    padding: 20,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-});

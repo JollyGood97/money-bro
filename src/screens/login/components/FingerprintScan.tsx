@@ -29,7 +29,6 @@ const FingerprintScan: FC<FingerprintScanProps> = (
       FingerprintScanner.authenticate({
         description: 'Please scan',
       })
-
         .then(() => {
           setAuthenticated(true);
           setIsAuthenticating(true);

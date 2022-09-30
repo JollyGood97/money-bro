@@ -10,13 +10,16 @@ import {
   Button,
   VStack,
   Spinner,
+  useColorModeValue,
+  View,
 } from 'native-base';
+// @ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   useGetAllUsersQuery,
   useGetAllUsersIncomeExpenseQuery,
-} from '../../../api/baseApi';
+} from '../../../api/BaseApi';
 import {UserContext} from '../../../context/UserContext';
 import {
   EXPENSE,
@@ -81,7 +84,6 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
   }, [allUsers, allUsersIEData, type]);
 
   useEffect(() => {
-    // no dta msg
     if (!isLoadingUsers && !isLoadingIEData && !isEmpty(allUsersIEData)) {
       setData();
       return () => setData();
@@ -127,7 +129,7 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
       : 'yellow.200';
 
   return (
-    <>
+    <View height="100%" bg={useColorModeValue('white', '#000e21')}>
       {isLoadingUsers || isLoadingIEData ? (
         <VStack marginTop={20} space={10} alignItems="center">
           <Spinner color="indigo.500" size="lg" />
@@ -205,7 +207,7 @@ const Leaderboard: FC<LeaderboardProps> = (props: LeaderboardProps) => {
           />
         </Box>
       )}
-    </>
+    </View>
   );
 };
 

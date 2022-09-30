@@ -1,7 +1,7 @@
 import React, {FC, useState} from 'react';
 
 import {Input, FormControl, Text} from 'native-base';
-import {useAddMonthlyGoalMutation} from '../../../api/baseApi';
+import {useAddMonthlyGoalMutation} from '../../../api/BaseApi';
 import Modal from '../../../common/Modal';
 import NumericInput from '../../../common/NumericInput';
 

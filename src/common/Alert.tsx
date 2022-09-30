@@ -1,13 +1,13 @@
 import React, {FC} from 'react';
 import {
   Alert,
-  CloseIcon,
   IAlertProps,
   HStack,
   IconButton,
   Text,
   VStack,
 } from 'native-base';
+//@ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface AlertProps extends IAlertProps {

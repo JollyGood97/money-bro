@@ -5,7 +5,7 @@ import {useNetInfo, NetInfoState} from '@react-native-community/netinfo';
 import Modal from '../common/Modal';
 import NumericInput from './NumericInput';
 
-import {useAddIncomeExpenseMutation} from '../api/baseApi';
+import {useAddIncomeExpenseMutation} from '../api/BaseApi';
 import isEmpty from 'lodash/isEmpty';
 
 type AddIncomeExpenseModalProps = {
@@ -47,6 +47,7 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
           'No Internet connection. Your added data will be synced when back online.',
       });
     }
+    console.log('userID', userID);
     try {
       await addIncomeExpense({
         type,
@@ -55,14 +56,17 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
         month: currentMonth,
         uid: userID,
       }).then(() => {
-        setShowModal(true);
+        setShowModal(false);
+        setShowAlert(true);
         setAlertMessage({
           alertType: 'success',
           message: 'Successfully added.',
         });
       });
     } catch (error) {
-      setShowModal(true);
+      console.log('err', error);
+      setShowModal(false);
+      setShowAlert(true);
       setAlertMessage({
         alertType: 'error',
         message: 'Failed to add data.',

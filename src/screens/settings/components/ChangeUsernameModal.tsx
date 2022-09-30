@@ -4,7 +4,7 @@ import {useNetInfo, NetInfoState} from '@react-native-community/netinfo';
 
 import Modal from '../../../common/Modal';
 
-import {useChangeCurrencyMutation} from '../../../api/baseApi';
+import {useChangeCurrencyMutation} from '../../../api/BaseApi';
 import isEmpty from 'lodash/isEmpty';
 
 type ChangeCurrencyModalProps = {

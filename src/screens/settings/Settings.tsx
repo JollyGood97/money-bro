@@ -1,10 +1,9 @@
-import React, {FC, useState, useRef, useEffect, useContext} from 'react';
+import React, {FC, useState, useContext} from 'react';
 import {
   HStack,
   Center,
   View,
   Text,
-  Button,
   Switch,
   useColorMode,
   VStack,
@@ -12,15 +11,15 @@ import {
   Pressable,
   Spacer,
 } from 'native-base';
-
-import {ScrollView} from 'react-native-gesture-handler';
 // @ts-ignore
-import CurrencyPicker from 'react-native-currency-picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ScrollView} from 'react-native-gesture-handler';
+
 import {UserContext} from './../../context/UserContext';
 import User from '../../model/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import {useEnableLeaderboardMutation} from '../../api/baseApi';
+import {useEnableLeaderboardMutation} from '../../api/BaseApi';
 import ChangeCurrencyModal from './components/ChangeCurrencyModal';
 import AlertNotice from '../../common/Alert';
 import AlertMsg from '../../model/AlertMsg';
@@ -31,7 +30,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
   const {} = props;
 
   const userContext = useContext(UserContext);
-  const [enableLeaderboard, {isLoading}] = useEnableLeaderboardMutation();
+  const [enableLeaderboard] = useEnableLeaderboardMutation();
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<AlertMsg>({} as AlertMsg);
 
@@ -44,35 +43,12 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
   );
   const [showChangeCurrencyModal, setShowChangeCurrencyModal] =
     useState<boolean>(false);
-  console.log('leaderboardEnabled', leaderboardEnabled);
-  // Add sign out and select currency option & stay logged in options
 
-  // useEffect(() => {
-  //   const getMode = async () => {
-  //     const isDarkModeEnabled = await AsyncStorage.getItem('isDarkModeEnabled');
-
-  //     if (isDarkModeEnabled) {
-  //       console.log('isDarkModeEnabled', isDarkModeEnabled === 'true');
-  //       setIsDarkMode(isDarkModeEnabled === 'true');
-  //     }else{
-  //       setIsDarkMode(false);
-  //     }
-  //   };
-  //   getMode();
-  // }, []);
-
-  // const setMode = async (value: boolean) => {
-  //   try {
-  //     await AsyncStorage.setItem('isDarkModeEnabled', JSON.stringify(value));
-  //   } catch (e) {
-  //     return;
-  //   }
-  // };
   const navigation = useNavigation();
 
   return (
     <ScrollView>
-      <View m={8}>
+      <View height="100%" bg={useColorModeValue('white', '#000e21')} p={8}>
         <Center>
           {showAlert && (
             <AlertNotice
@@ -91,7 +67,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
               paddingTop={5}
               paddingRight={3}
               paddingBottom={5}>
-              <Text bold fontSize={18}>
+              <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                 Use Dark Mode
               </Text>
               <Spacer />
@@ -108,7 +84,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
               />
             </HStack>
             <HStack space={10} bg="indigo.100" rounded="lg" p="5">
-              <Text bold fontSize={18}>
+              <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                 Change Username
               </Text>
             </HStack>
@@ -117,14 +93,14 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 setShowChangeCurrencyModal(true);
               }}>
               <HStack space={10} bg="indigo.100" rounded="lg" p="5">
-                <Text bold fontSize={18}>
+                <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                   Change Currency
                 </Text>
               </HStack>
             </Pressable>
 
             <HStack space={10} bg="indigo.100" rounded="lg" p="5">
-              <Text bold fontSize={18}>
+              <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                 Enable Leaderboard*
               </Text>
               <Switch
@@ -150,12 +126,15 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 } catch (e) {
                   console.log('Error');
                 }
+                //@ts-ignore
                 navigation.navigate('Login');
               }}>
               <HStack space={10} bg="indigo.100" rounded="lg" p="5">
-                <Text bold fontSize={18}>
+                <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                   Sign Out
                 </Text>
+                <Spacer />
+                <Icon name="logout" size={32} color="#312e81" />
               </HStack>
             </Pressable>
           </VStack>
@@ -181,18 +160,3 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
 };
 
 export default Settings;
-
-// const styles = StyleSheet.create({
-//   circleRed: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 20 / 2,
-//     backgroundColor: '#e11d48',
-//   },
-//   circleGreen: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 20 / 2,
-//     backgroundColor: '#16a34a',
-//   },
-// });
