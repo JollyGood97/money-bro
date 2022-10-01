@@ -47,7 +47,6 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
           'No Internet connection. Your added data will be synced when back online.',
       });
     }
-    console.log('userID', userID);
     try {
       await addIncomeExpense({
         type,
@@ -64,7 +63,6 @@ const AddIncomeExpenseModal: FC<AddIncomeExpenseModalProps> = (
         });
       });
     } catch (error) {
-      console.log('err', error);
       setShowModal(false);
       setShowAlert(true);
       setAlertMessage({

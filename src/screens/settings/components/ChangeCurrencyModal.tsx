@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {Input, FormControl, Text} from 'native-base';
 import {useNetInfo, NetInfoState} from '@react-native-community/netinfo';
 
@@ -6,6 +6,8 @@ import Modal from '../../../common/Modal';
 
 import {useChangeCurrencyMutation} from '../../../api/BaseApi';
 import isEmpty from 'lodash/isEmpty';
+import {UserContext} from '../../../context/UserContext';
+import User from '../../../model/User';
 
 type ChangeCurrencyModalProps = {
   showModal: boolean;
@@ -19,6 +21,8 @@ type ChangeCurrencyModalProps = {
 const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
   props: ChangeCurrencyModalProps,
 ) => {
+  const userContext = useContext(UserContext);
+
   const {
     showModal,
     setShowModal,
@@ -29,8 +33,7 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
   } = props;
   const [changeCurrency, {isLoading}] = useChangeCurrencyMutation();
   const [currency, setCurrency] = useState<string>(currentCurrency);
-  // const {toggleColorMode} = useColorMode();
-  // danger.200 for light mode.
+
   const internetState: NetInfoState = useNetInfo();
 
   const onSave = async () => {
@@ -48,15 +51,20 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
         currency,
         uid: userID,
       }).then(() => {
-        setShowModal(true);
+        userContext?.setUser({
+          ...(userContext?.user as User),
+          currency: currency,
+        });
+        setShowModal(false);
+        setShowAlert(true);
         setAlertMessage({
           alertType: 'success',
-          message:
-            'Successfully changed currency. It will be updated on app restart.',
+          message: 'Successfully changed currency.',
         });
       });
     } catch (error) {
-      setShowModal(true);
+      setShowModal(false);
+      setShowAlert(true);
       setAlertMessage({
         alertType: 'error',
         message: 'Failed to change currency.',

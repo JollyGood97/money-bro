@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 
-import {Input, FormControl, Text} from 'native-base';
+import {FormControl, Text} from 'native-base';
 import {useAddMonthlyGoalMutation} from '../../../api/BaseApi';
 import Modal from '../../../common/Modal';
 import NumericInput from '../../../common/NumericInput';
@@ -16,11 +16,8 @@ type AddGoalModalProps = {
 const AddGoalModal: FC<AddGoalModalProps> = (props: AddGoalModalProps) => {
   const {showModal, setShowModal, currentMonth, userID, currentMonthInText} =
     props;
-  const [addMonthlyGoal, {isLoading, isSuccess, isError}] =
-    useAddMonthlyGoalMutation();
+  const [addMonthlyGoal, {isLoading}] = useAddMonthlyGoalMutation();
   const [goal, setGoal] = useState<string>('');
-  // const {toggleColorMode} = useColorMode();
-  // danger.200 for light mode.
 
   const onSave = async () => {
     try {
@@ -32,7 +29,6 @@ const AddGoalModal: FC<AddGoalModalProps> = (props: AddGoalModalProps) => {
         setShowModal(false);
       });
     } catch (error) {
-      console.log('error adding', error);
       setShowModal(false);
     }
   };

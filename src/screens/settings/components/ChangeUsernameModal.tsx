@@ -1,17 +1,19 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {Input, FormControl, Text} from 'native-base';
 import {useNetInfo, NetInfoState} from '@react-native-community/netinfo';
 
 import Modal from '../../../common/Modal';
 
-import {useChangeCurrencyMutation} from '../../../api/BaseApi';
+import {useChangeUsernameMutation} from '../../../api/BaseApi';
 import isEmpty from 'lodash/isEmpty';
+import {UserContext} from '../../../context/UserContext';
+import User from '../../../model/User';
 
 type ChangeCurrencyModalProps = {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   userID: string;
-  currentCurrency: string;
+  currentUsername: string;
   setShowAlert: (value: boolean) => void;
   setAlertMessage: Function;
 };
@@ -19,18 +21,19 @@ type ChangeCurrencyModalProps = {
 const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
   props: ChangeCurrencyModalProps,
 ) => {
+  const userContext = useContext(UserContext);
+
   const {
     showModal,
     setShowModal,
     userID,
-    currentCurrency,
+    currentUsername,
     setShowAlert,
     setAlertMessage,
   } = props;
-  const [changeCurrency, {isLoading}] = useChangeCurrencyMutation();
-  const [currency, setCurrency] = useState<string>(currentCurrency);
-  // const {toggleColorMode} = useColorMode();
-  // danger.200 for light mode.
+  const [changeUsername, {isLoading}] = useChangeUsernameMutation();
+  const [username, setUsername] = useState<string>(currentUsername);
+
   const internetState: NetInfoState = useNetInfo();
 
   const onSave = async () => {
@@ -44,22 +47,27 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
       });
     }
     try {
-      await changeCurrency({
-        currency,
+      await changeUsername({
+        username,
         uid: userID,
       }).then(() => {
-        setShowModal(true);
+        userContext?.setUser({
+          ...(userContext?.user as User),
+          username,
+        });
+        setShowAlert(true);
+        setShowModal(false);
         setAlertMessage({
           alertType: 'success',
-          message:
-            'Successfully changed currency. It will be updated on app restart.',
+          message: 'Successfully changed username.',
         });
       });
     } catch (error) {
-      setShowModal(true);
+      setShowAlert(true);
+      setShowModal(false);
       setAlertMessage({
         alertType: 'error',
-        message: 'Failed to change currency.',
+        message: 'Failed to change username.',
       });
     }
   };
@@ -68,15 +76,15 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
     <Modal
       showModal={showModal}
       setShowModal={setShowModal}
-      heading="Change Currency"
+      heading="Change Username"
       onSave={onSave}
-      disableSave={isEmpty(currency)}
+      disableSave={isEmpty(username)}
       isLoading={isLoading}>
       <FormControl>
         <FormControl.Label>
-          <Text fontWeight="bold">Enter new currency symbol:</Text>
+          <Text fontWeight="bold">Enter new username:</Text>
         </FormControl.Label>
-        <Input onChangeText={(text: any) => setCurrency(text.trim())} />
+        <Input onChangeText={(text: any) => setUsername(text.trim())} />
       </FormControl>
     </Modal>
   );
