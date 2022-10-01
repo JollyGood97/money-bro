@@ -21,7 +21,6 @@ export const baseApi = createApi({
           await firestore()
             .collection('accounts')
             .where('uid', '==', uid)
-            // .orderBy('month', 'asc')
             .orderBy('createdAt', 'asc')
             .get()
             .then(querySnapshot => {
@@ -209,7 +208,7 @@ export const baseApi = createApi({
           await firestore()
             .collection('users')
             .doc(data.uid)
-            .update({username: data.changeUsername});
+            .update({username: data.username});
           return {data};
         } catch (error) {
           return {error};

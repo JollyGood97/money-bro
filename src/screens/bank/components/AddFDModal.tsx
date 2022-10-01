@@ -23,13 +23,14 @@ type AddFDModalProps = {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   userID: string;
+  setShowAlert: Function;
+  setAlertMessage: Function;
 };
 
 const AddFDModal: FC<AddFDModalProps> = (props: AddFDModalProps) => {
-  const {showModal, setShowModal, userID} = props;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [addFixedDeposit, {isLoading, isSuccess, isError}] =
-    useAddFixedDepositMutation();
+  const {showModal, setShowModal, userID, setShowAlert, setAlertMessage} =
+    props;
+  const [addFixedDeposit, {isLoading}] = useAddFixedDepositMutation();
   const [bank, setbank] = useState<string>('');
   const [deposit, setDeposit] = useState<string>('');
   const [rate, setRate] = useState<string>('');
@@ -56,9 +57,13 @@ const AddFDModal: FC<AddFDModalProps> = (props: AddFDModalProps) => {
           uid: userID,
         }).then(() => {
           setShowModal(false);
+          setShowAlert(true);
+          setAlertMessage({
+            alertType: 'success',
+            message: 'Successfully added.',
+          });
         });
       }}
-      // disableSave={isEmpty(currency)}
       isLoading={isLoading}>
       <FormControl>
         <FormControl.Label>Bank</FormControl.Label>
@@ -183,18 +188,3 @@ const AddFDModal: FC<AddFDModalProps> = (props: AddFDModalProps) => {
 };
 
 export default AddFDModal;
-
-// const styles = StyleSheet.create({
-//   circleRed: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 20 / 2,
-//     backgroundColor: '#e11d48',
-//   },
-//   circleGreen: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 20 / 2,
-//     backgroundColor: '#16a34a',
-//   },
-// });

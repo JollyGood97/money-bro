@@ -23,6 +23,7 @@ import {useEnableLeaderboardMutation} from '../../api/BaseApi';
 import ChangeCurrencyModal from './components/ChangeCurrencyModal';
 import AlertNotice from '../../common/Alert';
 import AlertMsg from '../../model/AlertMsg';
+import ChangeUsernameModal from './components/ChangeUsernameModal';
 
 type SettingsProps = {};
 
@@ -42,6 +43,8 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
     userContext?.user?.leaderboardEnabled || false,
   );
   const [showChangeCurrencyModal, setShowChangeCurrencyModal] =
+    useState<boolean>(false);
+  const [showChangeUsernameModal, setShowChangeUsernameModal] =
     useState<boolean>(false);
 
   const navigation = useNavigation();
@@ -83,11 +86,17 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 isChecked={!isDarkMode}
               />
             </HStack>
-            <HStack space={10} bg="indigo.100" rounded="lg" p="5">
-              <Text bold fontSize={18} _dark={{color: '#000e21'}}>
-                Change Username
-              </Text>
-            </HStack>
+            <Pressable
+              onPress={() => {
+                setShowChangeUsernameModal(true);
+              }}>
+              <HStack space={10} bg="indigo.100" rounded="lg" p="5">
+                <Text bold fontSize={18} _dark={{color: '#000e21'}}>
+                  Change Username
+                </Text>
+              </HStack>
+            </Pressable>
+
             <Pressable
               onPress={() => {
                 setShowChangeCurrencyModal(true);
@@ -152,6 +161,14 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
         setShowModal={setShowChangeCurrencyModal}
         userID={userContext?.user?.uid || ''}
         currentCurrency={userContext?.user?.currency || ''}
+        setShowAlert={setShowAlert}
+        setAlertMessage={setAlertMessage}
+      />
+      <ChangeUsernameModal
+        showModal={showChangeUsernameModal}
+        setShowModal={setShowChangeUsernameModal}
+        userID={userContext?.user?.uid || ''}
+        currentUsername={userContext?.user?.username || ''}
         setShowAlert={setShowAlert}
         setAlertMessage={setAlertMessage}
       />

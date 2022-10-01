@@ -1,6 +1,14 @@
 import React, {FC} from 'react';
 
-import {Box, Center, Text, VStack, HStack} from 'native-base';
+import {
+  Box,
+  Center,
+  Text,
+  VStack,
+  HStack,
+  useColorModeValue,
+  View,
+} from 'native-base';
 
 type PanelProps = {
   heading: string;
@@ -49,25 +57,27 @@ const OverallSummary: FC<OverallSummaryProps> = (
   const {overallIncome, overallExpense} = props;
 
   return (
-    <Box paddingTop={6}>
-      <VStack space={10}>
-        <Panel
-          heading=" Overall Income"
-          amount={overallIncome}
-          color="indigo.800"
-        />
-        <Panel
-          heading=" Overall Expense"
-          amount={overallExpense}
-          color="yellow.400"
-        />
-        <Panel
-          heading=" Total Savings"
-          amount={overallIncome - overallExpense}
-          color="info.400"
-        />
-      </VStack>
-    </Box>
+    <View height="100%" bg={useColorModeValue('#f5f5f4', '#000e21')}>
+      <Box paddingTop={6}>
+        <VStack space={10}>
+          <Panel
+            heading=" Overall Income"
+            amount={overallIncome}
+            color="indigo.800"
+          />
+          <Panel
+            heading=" Overall Expense"
+            amount={overallExpense}
+            color="yellow.400"
+          />
+          <Panel
+            heading=" Total Savings"
+            amount={overallIncome - overallExpense}
+            color="info.400"
+          />
+        </VStack>
+      </Box>
+    </View>
   );
 };
 

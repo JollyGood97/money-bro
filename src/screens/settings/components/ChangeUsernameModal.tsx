@@ -4,14 +4,14 @@ import {useNetInfo, NetInfoState} from '@react-native-community/netinfo';
 
 import Modal from '../../../common/Modal';
 
-import {useChangeCurrencyMutation} from '../../../api/BaseApi';
+import {useChangeUsernameMutation} from '../../../api/BaseApi';
 import isEmpty from 'lodash/isEmpty';
 
 type ChangeCurrencyModalProps = {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   userID: string;
-  currentCurrency: string;
+  currentUsername: string;
   setShowAlert: (value: boolean) => void;
   setAlertMessage: Function;
 };
@@ -23,14 +23,13 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
     showModal,
     setShowModal,
     userID,
-    currentCurrency,
+    currentUsername,
     setShowAlert,
     setAlertMessage,
   } = props;
-  const [changeCurrency, {isLoading}] = useChangeCurrencyMutation();
-  const [currency, setCurrency] = useState<string>(currentCurrency);
-  // const {toggleColorMode} = useColorMode();
-  // danger.200 for light mode.
+  const [changeUsername, {isLoading}] = useChangeUsernameMutation();
+  const [username, setUsername] = useState<string>(currentUsername);
+
   const internetState: NetInfoState = useNetInfo();
 
   const onSave = async () => {
@@ -44,15 +43,15 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
       });
     }
     try {
-      await changeCurrency({
-        currency,
+      await changeUsername({
+        username,
         uid: userID,
       }).then(() => {
         setShowModal(true);
         setAlertMessage({
           alertType: 'success',
           message:
-            'Successfully changed currency. It will be updated on app restart.',
+            'Successfully changed username. It will be updated on app restart.',
         });
       });
     } catch (error) {
@@ -70,13 +69,13 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
       setShowModal={setShowModal}
       heading="Change Currency"
       onSave={onSave}
-      disableSave={isEmpty(currency)}
+      disableSave={isEmpty(username)}
       isLoading={isLoading}>
       <FormControl>
         <FormControl.Label>
-          <Text fontWeight="bold">Enter new currency symbol:</Text>
+          <Text fontWeight="bold">Enter new username:</Text>
         </FormControl.Label>
-        <Input onChangeText={(text: any) => setCurrency(text.trim())} />
+        <Input onChangeText={(text: any) => setUsername(text.trim())} />
       </FormControl>
     </Modal>
   );

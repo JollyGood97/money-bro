@@ -96,14 +96,13 @@ const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
 
   useEffect(() => {
     calculateData();
-    return () => calculateData(); // test this (unsubscribe when no longer in use)
+    return () => calculateData(); // (unsubscribe when no longer in use)
   }, [calculateData]);
 
   useEffect(() => {
     getGoalForThisMonth();
-    return () => getGoalForThisMonth(); // test this (unsubscribe when no longer in use)
+    return () => getGoalForThisMonth(); // (unsubscribe when no longer in use)
   }, [getGoalForThisMonth]);
-  //  console.log(isSuccess, isLoading, isError, error, data)
 
   return (
     <View height="100%" bg={useColorModeValue('#e0e7ff', '#000e21')}>

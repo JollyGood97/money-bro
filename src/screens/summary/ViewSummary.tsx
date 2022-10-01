@@ -16,13 +16,7 @@ const ViewSummary = () => {
   const userContext = useContext(UserContext);
   const userID = userContext?.user?.uid || '';
 
-  const {
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-    data = [],
-  } = useGetIncomeExpenseQuery({uid: userID});
+  const {isLoading, data = []} = useGetIncomeExpenseQuery({uid: userID});
   const [overallIncome, setOverallIncome] = useState<number>(0);
   const [overallExpense, setOverallExpense] = useState<number>(0);
   const [monthlyIncomeData, setMonthlyIncomeData] = useState<MonthlyData[]>([]);
