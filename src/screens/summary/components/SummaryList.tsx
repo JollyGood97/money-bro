@@ -10,19 +10,22 @@ import {
   useColorModeValue,
   View,
 } from 'native-base';
+
 import {INCOME} from '../../../constants/Constants';
 import Transaction from '../../../model/Transaction';
 import isEmpty from 'lodash/isEmpty';
 import MonthlyData from '../../../model/MonthlyData';
+import NoDataMessage from '../../../common/NoDataMessage';
 
 type SummaryListProps = {
   data: MonthlyData[];
   type: 'Income' | 'Expense';
   getTotalPerMonth: Function;
+  userCurrency: string;
 };
 
 const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
-  const {data, type} = props;
+  const {data, type, userCurrency} = props;
 
   const getTotalPerMonth = (dataForMonth: Transaction[]): number => {
     let total = 0;
@@ -41,6 +44,11 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
             {type === INCOME ? 'Income' : 'Expenses'}
           </Heading>
         </Center>
+        {isEmpty(data) && (
+          <Box paddingLeft={5} paddingRight={5}>
+            <NoDataMessage description="No data. Start adding to view the summary." />
+          </Box>
+        )}
 
         {data.map((monthlyData, key: number) => {
           if (!isEmpty(monthlyData)) {
@@ -57,62 +65,39 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
                       bg={'white'}
                       rounded="lg"
                       borderBottomWidth="1"
-                      _dark={{
-                        borderColor: 'muted.50',
-                      }}
                       borderColor="warmGray.300"
                       p={2}
                       marginLeft={5}
                       marginRight={5}>
                       <HStack>
-                        <Text
-                          _dark={{
-                            color: 'warmGray.50',
-                          }}
-                          color="coolGray.800"
-                          bold>
+                        <Text color="coolGray.800" bold>
                           {item.description}
                         </Text>
 
                         <Spacer />
 
-                        <Text
-                          fontSize="16px"
-                          _dark={{
-                            color: 'warmGray.50',
-                          }}
-                          bold
-                          color="indigo.900">
-                          $ {item.amount}
+                        <Text fontSize="16px" bold color="indigo.900">
+                          {userCurrency} {item.amount}
                         </Text>
                       </HStack>
                     </Box>
                   )}
                   keyExtractor={item => item.id}
                 />
+
                 <HStack
                   p={2}
                   rounded={'lg'}
                   bgColor={'blue.200'}
                   marginRight={5}
                   marginLeft={5}>
-                  <Text
-                    _dark={{
-                      color: 'warmGray.50',
-                    }}
-                    color="coolGray.800"
-                    bold>
+                  <Text color="coolGray.800" bold>
                     Total
                   </Text>
                   <Spacer />
-                  <Text
-                    fontSize="16px"
-                    _dark={{
-                      color: 'warmGray.50',
-                    }}
-                    bold
-                    color="indigo.900">
-                    $ {getTotalPerMonth(monthlyData.data)?.toString()}
+                  <Text fontSize="16px" bold color="indigo.900">
+                    {userCurrency}{' '}
+                    {getTotalPerMonth(monthlyData.data)?.toString()}
                   </Text>
                 </HStack>
               </Box>

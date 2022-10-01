@@ -26,7 +26,7 @@ const AlertNotice: FC<AlertProps> = (props: AlertProps) => {
       ? 'alert'
       : alertType === 'warning'
       ? 'exclamation-thick'
-      : 'info';
+      : 'information';
 
   const iconColor =
     alertType === 'success'
@@ -41,7 +41,7 @@ const AlertNotice: FC<AlertProps> = (props: AlertProps) => {
         <HStack flexShrink={1} space={2} justifyContent="space-between">
           <HStack space={2} flexShrink={1} paddingTop={1} paddingRight={2}>
             <Icon name={iconType} size={24} color={iconColor} />
-            <Text fontSize="12px" marginRight={2}>
+            <Text fontSize="12px" marginRight={2} color="black">
               {message}
             </Text>
           </HStack>

@@ -47,7 +47,6 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
   const [alertMsg, setAlertMsg] = useState<string>('');
 
   useEffect(() => {
-    console.log('authenticated', authenticated);
     if (authenticated) {
       const usersRef = firestore().collection('users');
       auth().onAuthStateChanged(user => {
@@ -79,13 +78,6 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     let isValid = true;
 
-    if (isEmpty(email) && isEmpty(password)) {
-      setErrorMessages({
-        email: 'Please enter your email address',
-        password: 'Please enter your password',
-      });
-      isValid = false;
-    }
     if (isEmpty(email)) {
       setErrorMessages({
         ...errorMessages,
@@ -100,7 +92,7 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
       });
       isValid = false;
     }
-    if (emailRegex.test(email) === false) {
+    if (!isEmpty(email) && emailRegex.test(email) === false) {
       setErrorMessages({
         ...errorMessages,
         email: 'Please enter a valid email address',
@@ -159,8 +151,6 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
     }
   };
 
-  // danger.200 for light mode.
-
   return (
     <Center w="100%" bg={useColorModeValue('#f5f5f4', 'black')} h="100%">
       {showAlert && (
@@ -210,12 +200,6 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
           </FormControl>
           <FormControl isInvalid={!!errorMessages.password}>
             <FormControl.Label>Password</FormControl.Label>
-            {/* <Input w={{
-      base: "75%",
-      md: "25%"
-    }} type={show ? "text" : "password"} InputRightElement={<Pressable onPress={() => setShow(!show)}>
-            <Icon as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
-          </Pressable>} placeholder="Password" /> */}
             <Input
               type="password"
               onChangeText={text => {
@@ -286,15 +270,11 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
           }}
         />
 
-        {isAuthenticating ? (
-          <HStack space={2} justifyContent="center">
-            <Spinner accessibilityLabel="Logging in" />
-            <Heading color="indigo.500" fontSize="md">
-              Loading
-            </Heading>
-          </HStack>
-        ) : userContext?.user?.uid ? (
-          <VStack>
+        {userContext?.user?.uid && !isAuthenticating && (
+          <VStack
+            _dark={{
+              bg: 'white',
+            }}>
             <Text marginBottom={2}>
               You can also use your fingerprint to login:
             </Text>
@@ -303,7 +283,16 @@ const Login: FC<LoginProps> = ({navigation}: LoginProps) => {
               setIsAuthenticating={setIsAuthenticating}
             />
           </VStack>
-        ) : (
+        )}
+        {userContext?.user?.uid && isAuthenticating && (
+          <HStack space={2} justifyContent="center">
+            <Spinner accessibilityLabel="Logging in" />
+            <Heading color="indigo.500" fontSize="md">
+              Loading
+            </Heading>
+          </HStack>
+        )}
+        {!userContext?.user?.uid && (
           <VStack>
             <Text>
               Fingerprint Authentication is not available on first time sign in.

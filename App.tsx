@@ -1,14 +1,10 @@
 import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, Button, View} from 'react-native';
 import {NativeBaseProvider, StorageManager, ColorMode} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
 
 import IntroSlider from './src/screens/intro/IntroSlider';
-import Auth from './src/screens/Auth';
-import AppDrawer from './src/routes/AppDrawer';
 import UserProvider from './src/context/UserContext';
 import AppStack from './src/routes/AppStack';
 
@@ -29,8 +25,6 @@ const App = () => {
       if (stayLoggedIn) {
         console.log('stayLoggedIn', stayLoggedIn);
         setDirectToHome(stayLoggedIn === 'true');
-      } else {
-        //   !isEmpty(userContext?.user) && setDirectToHome(true);
       }
     };
     setPreferences();
@@ -65,14 +59,6 @@ const App = () => {
               cachedID={cachedID}
             />
           ) : (
-            // <SafeAreaView style={styles.container}>
-            //   <View style={styles.container}>
-            //     <Button
-            //       title="Show Intro Slider again"
-            //       onPress={() => setShowRealApp(false)}
-            //     />
-            //   </View>
-            // </SafeAreaView>
             <IntroSlider setShowRealApp={setShowRealApp} />
           )}
         </NativeBaseProvider>

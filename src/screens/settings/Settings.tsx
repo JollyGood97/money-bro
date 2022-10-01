@@ -51,16 +51,14 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
 
   return (
     <ScrollView>
+      {showAlert && (
+        <AlertNotice
+          alertType={alertMessage.alertType}
+          message={alertMessage.message}
+          setShowAlert={setShowAlert}
+        />
+      )}
       <View height="100%" bg={useColorModeValue('#f5f5f4', '#000e21')} p={8}>
-        <Center>
-          {showAlert && (
-            <AlertNotice
-              alertType={alertMessage.alertType}
-              message={alertMessage.message}
-              setShowAlert={setShowAlert}
-            />
-          )}
-        </Center>
         <Center>
           <VStack space={5}>
             <HStack
@@ -76,8 +74,8 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
               <Spacer />
               <Switch
                 offTrackColor="indigo.900"
-                onTrackColor="indigo.200"
-                onThumbColor="indigo.500"
+                onTrackColor="indigo.400"
+                onThumbColor="indigo.600"
                 offThumbColor="indigo.50"
                 onToggle={() => {
                   toggleColorMode();
@@ -94,6 +92,8 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                   Change Username
                 </Text>
+                <Spacer />
+                <Icon name="pencil" size={24} color="#312e81" />
               </HStack>
             </Pressable>
 
@@ -105,6 +105,10 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                 <Text bold fontSize={18} _dark={{color: '#000e21'}}>
                   Change Currency
                 </Text>
+                <Spacer />
+                <Text bold color="indigo.900" fontSize={18}>
+                  {userContext?.user?.currency}
+                </Text>
               </HStack>
             </Pressable>
 
@@ -114,13 +118,17 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
               </Text>
               <Switch
                 offTrackColor="indigo.900"
-                onTrackColor="indigo.200"
-                onThumbColor="indigo.500"
+                onTrackColor="indigo.400"
+                onThumbColor="indigo.600"
                 offThumbColor="indigo.50"
                 onToggle={() => {
                   setLeaderboardEnabled(!leaderboardEnabled);
                   enableLeaderboard({
                     uid: userContext?.user?.uid,
+                    leaderboardEnabled: !leaderboardEnabled,
+                  });
+                  userContext?.setUser({
+                    ...(userContext?.user as User),
                     leaderboardEnabled: !leaderboardEnabled,
                   });
                 }}
@@ -143,7 +151,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
                   Sign Out
                 </Text>
                 <Spacer />
-                <Icon name="logout" size={32} color="#312e81" />
+                <Icon name="logout" size={28} color="#312e81" />
               </HStack>
             </Pressable>
           </VStack>
@@ -151,8 +159,7 @@ const Settings: FC<SettingsProps> = (props: SettingsProps) => {
             *Please note that if you enable this, your data will be used to
             determine your rank in the leaderboard. However, other users will
             not see your actual data on the leaderboard, only will see
-            percentage wise. The change will be made on the restart of the
-            application.
+            percentage wise.
           </Text>
         </Center>
       </View>

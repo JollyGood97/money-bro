@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {Input, FormControl, Text} from 'native-base';
 import {useNetInfo, NetInfoState} from '@react-native-community/netinfo';
 
@@ -6,6 +6,8 @@ import Modal from '../../../common/Modal';
 
 import {useChangeUsernameMutation} from '../../../api/BaseApi';
 import isEmpty from 'lodash/isEmpty';
+import {UserContext} from '../../../context/UserContext';
+import User from '../../../model/User';
 
 type ChangeCurrencyModalProps = {
   showModal: boolean;
@@ -19,6 +21,8 @@ type ChangeCurrencyModalProps = {
 const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
   props: ChangeCurrencyModalProps,
 ) => {
+  const userContext = useContext(UserContext);
+
   const {
     showModal,
     setShowModal,
@@ -47,18 +51,23 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
         username,
         uid: userID,
       }).then(() => {
-        setShowModal(true);
+        userContext?.setUser({
+          ...(userContext?.user as User),
+          username,
+        });
+        setShowAlert(true);
+        setShowModal(false);
         setAlertMessage({
           alertType: 'success',
-          message:
-            'Successfully changed username. It will be updated on app restart.',
+          message: 'Successfully changed username.',
         });
       });
     } catch (error) {
-      setShowModal(true);
+      setShowAlert(true);
+      setShowModal(false);
       setAlertMessage({
         alertType: 'error',
-        message: 'Failed to change currency.',
+        message: 'Failed to change username.',
       });
     }
   };
@@ -67,7 +76,7 @@ const ChangeCurrencyModal: FC<ChangeCurrencyModalProps> = (
     <Modal
       showModal={showModal}
       setShowModal={setShowModal}
-      heading="Change Currency"
+      heading="Change Username"
       onSave={onSave}
       disableSave={isEmpty(username)}
       isLoading={isLoading}>

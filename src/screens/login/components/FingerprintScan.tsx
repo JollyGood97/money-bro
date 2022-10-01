@@ -53,7 +53,9 @@ const FingerprintScan: FC<FingerprintScanProps> = (
           size="120"
         />
       </Pressable>
-      <Text>Touch</Text>
+      <Text color="black" bold>
+        Touch
+      </Text>
     </Center>
   );
 };

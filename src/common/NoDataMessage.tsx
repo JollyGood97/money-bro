@@ -16,8 +16,10 @@ const NoDataMessage: FC<NoDataMessageProps> = (props: NoDataMessageProps) => {
       shadow={2}
       marginTop={6}
       marginBottom={12}>
-      <Text bold>No Data!</Text>
-      <Text>{description}</Text>
+      <Text bold color="black">
+        No Data!
+      </Text>
+      <Text color="black">{description}</Text>
     </Box>
   );
 };

@@ -18,6 +18,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {useAddFixedDepositMutation} from '../../../api/BaseApi';
 import {getFormattedDate} from '../../../utils/CommonUtils';
 import Modal from '../../../common/Modal';
+import NumericInput from '../../../common/NumericInput';
 
 type AddFDModalProps = {
   showModal: boolean;
@@ -55,6 +56,8 @@ const AddFDModal: FC<AddFDModalProps> = (props: AddFDModalProps) => {
           startDate,
           calculationEnabled,
           uid: userID,
+          outstandingAmount: deposit,
+          renewalDate: startDate,
         }).then(() => {
           setShowModal(false);
           setShowAlert(true);
@@ -71,22 +74,7 @@ const AddFDModal: FC<AddFDModalProps> = (props: AddFDModalProps) => {
       </FormControl>
       <FormControl mt="3">
         <FormControl.Label>Initial Deposit</FormControl.Label>
-        <InputGroup
-          w={{
-            base: '70%',
-            md: '285',
-          }}>
-          <Input
-            w={{
-              base: '70%',
-              md: '100%',
-            }}
-            placeholder="amount"
-            keyboardType="numeric"
-            onChangeText={val => setDeposit(val)}
-          />
-          <InputRightAddon children={'$'} />
-        </InputGroup>
+        <NumericInput onChange={val => setDeposit(val)} />
       </FormControl>
       <FormControl mt="3">
         <FormControl.Label>

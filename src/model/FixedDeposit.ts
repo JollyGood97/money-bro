@@ -9,6 +9,8 @@ type FixedDeposit = {
   startDate: any;
   calculationEnabled: boolean;
   createdAt?: any;
+  outstandingAmount: string;
+  renewalDate: any;
 };
 
 export default FixedDeposit;

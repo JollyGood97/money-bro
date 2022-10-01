@@ -15,6 +15,7 @@ const Tab = createMaterialTopTabNavigator();
 const ViewSummary = () => {
   const userContext = useContext(UserContext);
   const userID = userContext?.user?.uid || '';
+  const userCurrency = userContext?.user?.currency || '';
 
   const {isLoading, data = []} = useGetIncomeExpenseQuery({uid: userID});
   const [overallIncome, setOverallIncome] = useState<number>(0);
@@ -86,6 +87,7 @@ const ViewSummary = () => {
           <OverallSummary
             overallIncome={overallIncome}
             overallExpense={overallExpense}
+            userCurrency={userCurrency}
           />
         )}
       </Tab.Screen>
@@ -95,6 +97,7 @@ const ViewSummary = () => {
             data={monthlyIncomeData}
             type={INCOME}
             getTotalPerMonth={getTotalPerMonth}
+            userCurrency={userCurrency}
           />
         )}
       </Tab.Screen>
@@ -104,6 +107,7 @@ const ViewSummary = () => {
             data={monthlyExpenseData}
             type={EXPENSE}
             getTotalPerMonth={getTotalPerMonth}
+            userCurrency={userCurrency}
           />
         )}
       </Tab.Screen>
