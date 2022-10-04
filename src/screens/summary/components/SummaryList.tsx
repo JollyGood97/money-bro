@@ -54,7 +54,7 @@ const SummaryList: FC<SummaryListProps> = (props: SummaryListProps) => {
           if (!isEmpty(monthlyData)) {
             return (
               <Box key={key}>
-                <Heading marginTop={5} fontSize="lg" p="4" pb="3" key={key}>
+                <Heading mt={5} fontSize="lg" p="4" pb="3" key={key}>
                   {monthlyData.month}
                 </Heading>
 

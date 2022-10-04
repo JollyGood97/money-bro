@@ -115,7 +115,7 @@ const ViewBankDetails = () => {
                             item.startDate
                               ?.toDate()
                               .setMonth(
-                                item.startDate?.toDate().getMonth() +
+                                item.renewalDate?.toDate().getMonth() +
                                   parseInt(item.period, 10),
                               ),
                           ) || new Date(),
