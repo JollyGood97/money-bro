@@ -50,7 +50,7 @@ const ViewBankDetails = () => {
             />
           )}
 
-          <Box marginTop={5}>
+          <View flex={1} mt={5}>
             <HStack marginRight={4}>
               <Heading marginLeft={4}> Fixed Deposits</Heading>
               <Spacer />
@@ -188,7 +188,7 @@ const ViewBankDetails = () => {
               setShowAlert={setShowAlert}
               setAlertMessage={setAlertMessage}
             />
-          </Box>
+          </View>
         </>
       )}
     </View>
