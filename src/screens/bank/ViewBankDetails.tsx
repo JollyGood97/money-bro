@@ -112,10 +112,10 @@ const ViewBankDetails = () => {
                       <Text fontSize="16px" color="indigo.800" bold>
                         {getFormattedDate(
                           new Date(
-                            item.startDate
+                            item.renewalDate
                               ?.toDate()
                               .setMonth(
-                                item.startDate?.toDate().getMonth() +
+                                item.renewalDate?.toDate().getMonth() +
                                   parseInt(item.period, 10),
                               ),
                           ) || new Date(),
