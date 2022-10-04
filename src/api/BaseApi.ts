@@ -215,6 +215,20 @@ export const baseApi = createApi({
         }
       },
     }),
+    editFixedDeposit: builder.mutation({
+      invalidatesTags: ['newFixedDeposit'],
+      async queryFn(data) {
+        try {
+          await firestore().collection('fixedDeposits').doc(data.id).update({
+            renewalDate: data.renewalDate,
+            outstandingAmount: data.outstandingAmount,
+          });
+          return {data};
+        } catch (error) {
+          return {error};
+        }
+      },
+    }),
   }),
 });
 
@@ -230,4 +244,5 @@ export const {
   useEnableLeaderboardMutation,
   useChangeUsernameMutation,
   useChangeCurrencyMutation,
+  useEditFixedDepositMutation,
 } = baseApi;
